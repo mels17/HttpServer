@@ -1,7 +1,6 @@
 import java.io.*;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 
 public class HttpRequestResponseHandler implements Runnable{
@@ -14,7 +13,7 @@ public class HttpRequestResponseHandler implements Runnable{
     }
 
     private String getListOfFiles() {
-        return String.join("\n", _directory.list());
+        return String.join("\r\n", _directory.list());
     }
 
 
@@ -31,12 +30,14 @@ public class HttpRequestResponseHandler implements Runnable{
     private void readRequest() throws IOException {
         BufferedReader request = new BufferedReader(new InputStreamReader(_client.getInputStream()));
         BufferedWriter response = new BufferedWriter(new OutputStreamWriter(_client.getOutputStream()));
+
         if (isGetRequest(request)){
             StringBuilder sb = constructResponseHeader(200);
-            response.write(sb.toString());
-            response.write(getListOfFiles());
+            response.append(sb.toString());
+            response.append(getListOfFiles());
             sb.setLength(0);
             response.flush();
+            response.close();
         }
     }
 
@@ -62,7 +63,7 @@ public class HttpRequestResponseHandler implements Runnable{
     }
 
     private boolean isGetRequest(BufferedReader request) throws IOException {
-        return getRequestHeader(request).split("\n")[0].contains("GET");
+        return getRequestHeader(request).split("\n")[0].contains(Constants.GET_REQUEST);
     }
 
     private static String getTimeAndDate() {
