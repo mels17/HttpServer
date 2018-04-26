@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 
 public class HttpRequestResponseHandler implements Runnable{
@@ -12,8 +13,8 @@ public class HttpRequestResponseHandler implements Runnable{
         _directory = directory;
     }
 
-    private String[] getListOfFiles() {
-        return _directory.list();
+    private String getListOfFiles() {
+        return String.join("\n", _directory.list());
     }
 
 
@@ -29,19 +30,39 @@ public class HttpRequestResponseHandler implements Runnable{
 
     private void readRequest() throws IOException {
         BufferedReader request = new BufferedReader(new InputStreamReader(_client.getInputStream()));
-
-        // check if the request contains get
-
         BufferedWriter response = new BufferedWriter(new OutputStreamWriter(_client.getOutputStream()));
-
+        if (isGetRequest(request)){
+            StringBuilder sb = constructResponseHeader(200);
+            response.write(sb.toString());
+            response.write(getListOfFiles());
+            sb.setLength(0);
+            response.flush();
+        }
     }
 
-    private static void constructResponseHeader(int statusCode, StringBuilder sb) {
+    private static StringBuilder constructResponseHeader(int statusCode) {
+        StringBuilder sb = new StringBuilder();
         sb.append("HTTP/1.1 200 OK\r\n");
         sb.append("Date:" + getTimeAndDate() + "\r\n");
         sb.append("Server:localhost\r\n");
         sb.append("Content-Type: text/html\r\n");
         sb.append("Connection: Closed\r\n\r\n");
+
+        return sb;
+    }
+
+    private String getRequestHeader(BufferedReader request) throws IOException {
+        String temp = ".";
+        String requestHeader = "";
+        while(!temp.equals("")) {
+            temp = request.readLine();
+            requestHeader += temp + "\n";
+        }
+        return requestHeader;
+    }
+
+    private boolean isGetRequest(BufferedReader request) throws IOException {
+        return getRequestHeader(request).split("\n")[0].contains("GET");
     }
 
     private static String getTimeAndDate() {
