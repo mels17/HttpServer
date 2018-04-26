@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
@@ -22,11 +23,11 @@ public class HttpServer {
     private Logger logger;
     private boolean running;
     private int _port;
-    private String _directory;
+    private File _directory;
 
     private String errorMessage;
 
-    public HttpServer(int port, String directory) {
+    public HttpServer(int port, File directory) {
         _port = port;
         _directory = directory;
 
