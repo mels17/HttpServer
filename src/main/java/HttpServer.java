@@ -12,7 +12,7 @@ public class HttpServer {
      1. port number
      2. localhost url
      3. client listener
-     4. i. client sends a request to the server - get/post/put/delete
+     4. i. client sends a request to the server - get/post/put/delete - only doing get, so do we need a router?
         ii. server receives request
         iii. routes request to request handler corresponding to request
         iii. server then sends response
@@ -63,7 +63,7 @@ public class HttpServer {
     private void createClientRequestResponseHandlerOnNewThread(ServerSocket serverSocket) throws IOException {
         errorMessage = "Accepting client connection failed";
         Socket clientConnectionSocket = serverSocket.accept();
-        HttpCustomRequest handler = new HttpCustomRequest(clientConnectionSocket, _directory);
+        HttpRequestResponseHandler handler = new HttpRequestResponseHandler(clientConnectionSocket, _directory);
         Thread thread = new Thread(handler);
         thread.start();
     }
