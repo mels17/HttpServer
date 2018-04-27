@@ -15,6 +15,6 @@ public class MainServer {
             return;
         }
         HttpServer httpServer = new HttpServer(arguments.getPort(), directory);
-        httpServer.start();
+        httpServer.run();
     }
 }
