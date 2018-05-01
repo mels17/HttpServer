@@ -7,4 +7,5 @@ public class Constants {
     public static final String HEAD_REQUEST = "HEAD";
     public static final String OPTIONS_REQUEST = "OPTIONS";
     public static final String PATCH_REQUEST = "PATCH";
+    public static final String DELETE_REQUEST = "DELETE";
 }
