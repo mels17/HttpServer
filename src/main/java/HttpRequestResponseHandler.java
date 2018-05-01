@@ -70,6 +70,8 @@ public class HttpRequestResponseHandler implements Runnable {
             sb = getResponse(401, "Unauthorized", getParams(req));
         } else if(isRedirectGet(req)) {
             sb = constructRedirectResponse(req);
+        } else if(isGetAllFilesRequest(req)){
+            sb = constructGetFileLinksResponse();
         } else if (isGeneralRequest(req)) {
             sb = getResponse(200, "OK", getParams(req));
         } else if(isGetRequest(req)) {
@@ -86,17 +88,42 @@ public class HttpRequestResponseHandler implements Runnable {
             sb = constructOptionsResponse(req);
         } else if(isDeleteRequest(req)) {
             sb = getDeleteResponse(req);
+        } else {
+            sb = constructGeneralResponse(new StringBuilder(), 405, "Method Not Allowed");
         }
         response.write(sb.toString());
         sb.setLength(0);
         response.flush();
     }
 
+    private boolean isGetAllFilesRequest(String req) {
+        return isGetRequest(req) && getPath(req).equals("/");
+    }
+
+    private StringBuilder constructGetFileLinksResponse() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("HTTP/1.1 " + 200 + " " +  "OK" + "\r\n");
+        sb.append("Content-Type: text/html\r\n\r\n");
+        sb.append("<!DOCTYPE html>");
+        sb.append("<html>");
+        sb.append("<head>");
+        sb.append("<title> Page Title </title>");
+        sb.append("</head>");
+        sb.append("<body>");
+        for (String file:_directory.list()) {
+            String path = '/' + file;
+            sb.append("<a href=" + path + ">" + file + "</a>");
+        }
+        sb.append("</body>");
+        sb.append("</html>");
+        return sb;
+    }
+
     private StringBuilder getPutResponse(String req) {
         String filename = getPath(req);
         if(!filename.equals("/")) {
-//            if(!filename.contains(".")) filename += ".txt";
             String content = getDataFromRequest(req);
+            if(content.equals("")) return constructGeneralResponse(new StringBuilder(),405, "Method Not Allowed");
             try {
                 overWriteFile(filename, content);
             } catch (IOException e) {
@@ -127,10 +154,11 @@ public class HttpRequestResponseHandler implements Runnable {
     private static StringBuilder getPostResponse(String request) {
         String path = getPath(request);
         String filePath = "/Users/malavika.vasudevan/IdeaProjects/HttpServer/public/";
-        String content;
+        String content = getDataFromRequest(request);
+        if (content.equals("")) return constructGeneralResponse(new StringBuilder(), 405, "Method Not Allowed");
         if(path.equals("/cat-form")) {
             filePath += path.substring(1);
-            content = getDataFromRequest(request);
+
             String fileName = content.split("=")[0];
             try {
                 File file = new File(filePath + "/" + fileName);
@@ -167,7 +195,10 @@ public class HttpRequestResponseHandler implements Runnable {
     }
 
     private static String getDataFromRequest(String req) {
-        return req.split("\r\n\r\n")[1];
+        if(req.split("\r\n\r\n").length == 2) {
+            return req.split("\r\n\r\n")[1];
+        }
+        return "";
     }
 
     private void overWriteFile(String filename, String content) throws IOException {
@@ -220,8 +251,12 @@ public class HttpRequestResponseHandler implements Runnable {
         if(containsContentRangeInRequestHeader(req)) {
             sb = getPartialResponseHeader(sb, req, filename);
         } else {
-            sb.append("HTTP/1.1 " + 200 + " " +  "OK" + "\r\n\r\n");
+            sb.append("HTTP/1.1 " + 200 + " " +  "OK" + "\r\n");
         }
+        sb.append("Date:" + getTimeAndDate() + "\r\n");
+        sb.append("Server:localhost\r\n");
+        sb.append("Content-Type: text/html\r\n");
+        sb.append("Connection: Closed\r\n\r\n");
 
         try {
             sb.append(getTextFileContents(filename) + "\r\n");
@@ -231,10 +266,6 @@ public class HttpRequestResponseHandler implements Runnable {
             sb.append("File Not Found.");
             e.printStackTrace();
         }
-        sb.append("Date:" + getTimeAndDate() + "\r\n");
-        sb.append("Server:localhost\r\n");
-        sb.append("Content-Type: text/html\r\n");
-        sb.append("Connection: Closed\r\n\n");
         return sb;
     }
 
@@ -260,12 +291,13 @@ public class HttpRequestResponseHandler implements Runnable {
     }
 
     private static StringBuilder constructGeneralResponse(StringBuilder sb, int statusCode, String status) {
-        sb.append("HTTP/1.1 " + statusCode + " " +  status + "\r\n\r\n");
+        sb.append("HTTP/1.1 " + statusCode + " " +  status + "\r\n");
         sb.append("Date:" + getTimeAndDate() + "\r\n");
         sb.append("Server:localhost\r\n");
         sb.append("Content-Type: text/html\r\n");
-        sb.append("Connection: Closed\r\n\n");
+        sb.append("Connection: Closed\r\n\r\n");
 
+        sb.append(status);
         return sb;
     }
 
@@ -292,7 +324,8 @@ public class HttpRequestResponseHandler implements Runnable {
     }
 
     private boolean isGeneralRequest(String request) {
-        return isGetRequest(request) && request.split("\\s")[1].equals("/");
+        String path = request.split("\\s")[1];
+        return !isOptionsRequest(request) && (path.equals("/") || path.equals("/method_options") || path.equals("method_options2"));
     }
 
     private boolean isGetLogRequest(String request) {
