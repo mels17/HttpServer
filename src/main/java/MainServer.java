@@ -14,6 +14,8 @@ public class MainServer {
             System.out.println("The input is not a directory");
             return;
         }
+
+        System.out.println("image.jpeg".split("\\.")[1]);
         HttpServer httpServer = new HttpServer(arguments.getPort(), directory);
         httpServer.run();
     }

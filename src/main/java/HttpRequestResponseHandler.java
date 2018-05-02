@@ -1,5 +1,8 @@
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.Socket;
+import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -10,6 +13,9 @@ public class HttpRequestResponseHandler implements Runnable {
     private Socket _client;
     InputStreamReader request;
     OutputStreamWriter response;
+
+    public HttpRequestResponseHandler() {
+    }
 
     public HttpRequestResponseHandler(Socket clientConnectionSocket, File directory) {
         _client = clientConnectionSocket;
@@ -60,16 +66,91 @@ public class HttpRequestResponseHandler implements Runnable {
     }
 
     private void readRequest() throws IOException {
+        OutputStream out = _client.getOutputStream();
         request = new InputStreamReader(_client.getInputStream());
-        response = new OutputStreamWriter(_client.getOutputStream());
+        response = new OutputStreamWriter(out);
         BufferedReader in = new BufferedReader(request);
 
         String req = getRequestHeader(in);
         StringBuilder sb = new StringBuilder();
+
+        //* matt
+        /****
+         *
+         * LOOK HERE
+         */
+
+//        map { paths, objects }
+//        map { paths, "objects that implement HttpResponseCommand" }
+//
+//
+//        HashMap<String, HttpResponseCommand> mn = new Map();
+//        new Map( "/trea", new TeaPartyResponse());
+//
+//        command = map("/tea") => TeaPartyCommand
+//                map(null, new ErrorCommand);
+//
+//
+//        command.process();
+//
+//
+//        do(while)
+//            commandString = reader.read(request);
+//            handler = map.get(commandString);
+//            reponse = handler.process();
+//            return reponse;
+
+
+
+
+
+
         if (isGetLogRequest(req)) {
             sb = getResponse(401, "Unauthorized", getParams(req));
         } else if(isRedirectGet(req)) {
             sb = constructRedirectResponse(req);
+        } else if(isGetCoffee(req)) {
+            sb = constructFourEighteenResponse(req);
+        } else if(isGetTea(req)){
+            sb = getResponse(200, "OK", "");
+        } else if(isGetWithParameterPath(req)){
+            sb = constructResponseForGetWithParameters(req);
+        } else if(isGetImageFileRequest(req)) {
+            String extension = getFileExtension(req);
+            sb.append("HTTP/1.1 " + 200 + " " +  "OK" + "\r\n");
+            sb.append("Date:" + getTimeAndDate() + "\r\n");
+            sb.append("Server:localhost\r\n");
+            sb.append("Content-Type: image/" + extension + "\r\n");
+            sb.append("Connection: Closed\r\n\r\n");
+
+
+            File f1 = new File("/Users/malavika.vasudevan/IdeaProjects/HttpServer/public/image.jpeg");
+            byte[] buffer = null;
+
+            FileInputStream fis = new FileInputStream(f1);
+            BufferedInputStream BIS = new BufferedInputStream(fis);
+            buffer = new byte[BIS.available()];
+            BIS.read(buffer);
+
+            String msg = "";
+            for (int i = 0; i < buffer.length; i++) {
+                msg = msg + (char)buffer[i];
+            }
+
+            sb.append(msg);
+
+
+
+
+
+
+
+//            BufferedImage bI = getBufferedImage(req);
+//            String extension = getFileExtension(req);
+//            System.out.println(bI == null);
+//            ImageIO.write(bI, extension, _client.getOutputStream());
+//            sb = getResponse(200, "OK", "");
+//            out.write(getImageFileContents(req));
         } else if(isGetAllFilesRequest(req)){
             sb = constructGetFileLinksResponse();
         } else if (isGeneralRequest(req)) {
@@ -91,9 +172,87 @@ public class HttpRequestResponseHandler implements Runnable {
         } else {
             sb = constructGeneralResponse(new StringBuilder(), 405, "Method Not Allowed");
         }
-        response.write(sb.toString());
-        sb.setLength(0);
-        response.flush();
+
+        if(sb!=null) {
+            response.write(sb.toString());
+            sb.setLength(0);
+            response.flush();
+        }
+
+    }
+
+    private BufferedImage getBufferedImage(String req) {
+        String filename = "/Users/malavika.vasudevan/IdeaProjects/HttpServer/public/" + getPath(req).substring(1);
+        File file = new File(filename);
+        BufferedImage bi = null;
+        try {
+            bi = ImageIO.read(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bi;
+    }
+
+    private static StringBuilder getResponseForFilesOtherThanText(StringBuilder sb, String req) {
+        String filename = getPath(req).substring(1);
+
+        String imageType = filename.split("\\.")[1];
+        sb.append("HTTP/1.1 " + 200 + " " +  "OK" + "\r\n");
+        sb.append("Date:" + getTimeAndDate() + "\r\n");
+        sb.append("Server:localhost\r\n");
+        sb.append("Content-Type: image/" + imageType + "\r\n");
+        sb.append("Connection: Closed\r\n\r\n");
+
+
+        return sb;
+
+    }
+
+    private static byte[] getImageFileContents(String req) {
+        String path = "/Users/malavika.vasudevan/IdeaProjects/HttpServer/public/" + getPath(req).substring(1);
+        byte[] imageInByte = null;
+        try {
+            BufferedImage originalImage = ImageIO.read(new File(path));
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(originalImage, getFileExtension(req), baos);
+            baos.flush();
+            imageInByte = baos.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+//        File file = new File(path);
+//        try {
+//            FileInputStream in = new FileInputStream(file);
+//
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//        return "";
+        return imageInByte;
+    }
+
+    private StringBuilder constructFourEighteenResponse(String req) {
+        StringBuilder sb = new StringBuilder();
+        sb = constructResponseHeader(sb, 418, "I'm a teapot");
+        sb.append("I'm a teapot");
+        return sb;
+    }
+
+    private StringBuilder constructResponseForGetWithParameters(String req) {
+        StringBuilder sb = constructResponseHeader(new StringBuilder(), 200, "OK");
+        String queryString = getQueryString(req);
+        String[] parameters = queryString.split("&");
+        for (String param: parameters) {
+            String[] keyValue = param.split("=");
+            try {
+                sb.append(URLDecoder.decode(keyValue[0], "UTF-8") + " = " + URLDecoder.decode(keyValue[1], "UTF-8") + "\r\n");
+            } catch (UnsupportedEncodingException e) {
+                sb = constructResponseHeader(new StringBuilder(), 404, "Not Found");
+                e.getStackTrace();
+            }
+        }
+        return sb;
     }
 
     private boolean isGetAllFilesRequest(String req) {
@@ -145,7 +304,6 @@ public class HttpRequestResponseHandler implements Runnable {
 
     private void deleteFile(String filename) {
         String filePath = "/Users/malavika.vasudevan/IdeaProjects/HttpServer/public";
-//        if(!filename.contains(".")) filename += ".txt";
         File file = new File(filePath + filename);
         if(file.exists() && !file.isDirectory()) file.delete();
     }
@@ -248,6 +406,14 @@ public class HttpRequestResponseHandler implements Runnable {
         String filename = getPath(req).substring(1);
         StringBuilder sb = new StringBuilder();
 
+//        if(filename.contains(".jpeg") || filename.contains(".png") || filename.contains("gif")) {
+//            try {
+//                return getResponseForFilesOtherThanText(sb, filename);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+
         if(containsContentRangeInRequestHeader(req)) {
             sb = getPartialResponseHeader(sb, req, filename);
         } else {
@@ -255,7 +421,7 @@ public class HttpRequestResponseHandler implements Runnable {
         }
         sb.append("Date:" + getTimeAndDate() + "\r\n");
         sb.append("Server:localhost\r\n");
-        sb.append("Content-Type: text/html\r\n");
+        sb.append("Content-Type: text/plain\r\n");
         sb.append("Connection: Closed\r\n\r\n");
 
         try {
@@ -268,6 +434,8 @@ public class HttpRequestResponseHandler implements Runnable {
         }
         return sb;
     }
+
+
 
     private static StringBuilder getPartialResponseHeader(StringBuilder sb, String request, String filename) {
         ByteRange br = getContentRange(request);
@@ -286,18 +454,23 @@ public class HttpRequestResponseHandler implements Runnable {
         return new String(Files.readAllBytes(Paths.get(path)), "UTF-8");
     }
 
-    private static StringBuilder getResponse(int statusCode, String status, String  name) {
+    public static StringBuilder getResponse(int statusCode, String status, String  name) {
         return getListOfFiles(appendWelcomeString(constructGeneralResponse(new StringBuilder(), statusCode, status), name));
     }
 
     private static StringBuilder constructGeneralResponse(StringBuilder sb, int statusCode, String status) {
+        sb = constructResponseHeader(sb, statusCode, status);
+        sb.append("");
+        return sb;
+    }
+
+    private static StringBuilder constructResponseHeader(StringBuilder sb, int statusCode, String status) {
         sb.append("HTTP/1.1 " + statusCode + " " +  status + "\r\n");
         sb.append("Date:" + getTimeAndDate() + "\r\n");
         sb.append("Server:localhost\r\n");
         sb.append("Content-Type: text/html\r\n");
         sb.append("Connection: Closed\r\n\r\n");
 
-        sb.append(status);
         return sb;
     }
 
@@ -384,5 +557,30 @@ public class HttpRequestResponseHandler implements Runnable {
 
     private boolean isDeleteRequest(String req) {
         return req.startsWith(Constants.DELETE_REQUEST);
+    }
+
+    private boolean isGetWithParameterPath(String req) {
+        return isGetRequest(req) && getPath(req).contains("/parameters");
+    }
+
+    private String getQueryString(String req) {
+        String[] urlStrings = req.split("\\?");
+        return (urlStrings.length == 2) ? urlStrings[1].split("\\s")[0] : "";
+    }
+
+    private boolean isGetCoffee(String req) {
+        return isGetRequest(req) && getPath(req).equals("/coffee");
+    }
+
+    private boolean isGetTea(String req) {
+        return isGetRequest(req) && getPath(req).equals("/tea");
+    }
+
+    private boolean isGetImageFileRequest(String req) {
+        return isGetRequest(req) && (getPath(req).contains(".jpeg") || getPath(req).contains(".png") || getPath(req).contains(".gif"));
+    }
+
+    private static String getFileExtension(String req) {
+        return getPath(req).substring(1).split("\\.")[1];
     }
 }
