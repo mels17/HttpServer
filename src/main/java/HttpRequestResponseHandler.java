@@ -1,4 +1,5 @@
 import javax.imageio.ImageIO;
+import javax.xml.crypto.Data;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.Socket;
@@ -123,36 +124,55 @@ public class HttpRequestResponseHandler implements Runnable {
         } else if (isGetWithParameterPath(req)) {
             sb = constructResponseForGetWithParameters(req);
         } else if (isGetImageFileRequest(req)) {
+
+            sb = null;
             String extension = getFileExtension(req);
-            sb.append("HTTP/1.1 " + 200 + " " + "OK" + "\r\n");
-            sb.append("Date:" + getTimeAndDate() + "\r\n");
-            sb.append("Server:localhost\r\n");
-            sb.append("Content-Type: image/" + extension + "\r\n");
-            sb.append("Connection: Closed\r\n\r\n");
+//            sb.append("HTTP/1.1 " + 200 + " " + "OK" + "\r\n");
+//            sb.append("Date:" + getTimeAndDate() + "\r\n");
+//            sb.append("Server:localhost\r\n");
+//            sb.append("Content-Type: image/" + extension + "\r\n");
+//            sb.append("Connection: Closed\r\n\r\n");
+
+            String responseHeader = "HTTP/1.1 " + 200 + " " + "OK" + "\r\n"
+             + "Date:" + getTimeAndDate() + "\r\n"
+             + "Server:localhost\r\n"
+             + "Content-Type: image/" + extension + "\r\n"
+             + "Connection: Closed\r\n\r\n";
+
+            out.write(responseHeader.getBytes());
+
+            FileInputStream fis = new FileInputStream("/Users/malavika.vasudevan/IdeaProjects/HttpServer/public" + getPath(req));
+            DataOutputStream ds = new DataOutputStream(out);
+            int i;
+            while ((i = fis.read()) > -1)
+                out.write(i);
+
+            fis.close();
+            out.close();
 
 
-            File f1 = new File("/Users/malavika.vasudevan/IdeaProjects/HttpServer/public/image.jpeg");
-            byte[] buffer = null;
-
-            FileInputStream fis = new FileInputStream(f1);
-            BufferedInputStream BIS = new BufferedInputStream(fis);
-            buffer = new byte[BIS.available()];
-            BIS.read(buffer);
-
-            String msg = "";
-            for (int i = 0; i < buffer.length; i++) {
-                msg = msg + (char) buffer[i];
-            }
-
-            sb.append(msg);
+//            BufferedImage image = ImageIO.read(new File("/Users/malavika.vasudevan/IdeaProjects/HttpServer/public" + getPath(req)));
+//            ByteArrayOutputStream b = new ByteArrayOutputStream();
+//            ImageIO.write(image, extension, b);
+//            byte[] byteArray = b.toByteArray();
+//            for(byte by: byteArray) {
+//                sb.append(Integer.toBinaryString(by & 0xFF));
+//            }
+//
+//            sb.append("\r\n");
 
 
-//            BufferedImage bI = getBufferedImage(req);
-//            String extension = getFileExtension(req);
-//            System.out.println(bI == null);
-//            ImageIO.write(bI, extension, _client.getOutputStream());
-//            sb = getResponse(200, "OK", "");
-//            out.write(getImageFileContents(req));
+
+//            BufferedInputStream is = new BufferedInputStream(new FileInputStream("/Users/malavika.vasudevan/IdeaProjects/HttpServer/public" + getPath(req)));
+//            for(int i; (i = is.read()) != -1;) {
+//                String temp = "00000000" + Integer.toBinaryString(i).toUpperCase();
+//                if(temp.length() == 1) {
+//                    sb.append('0');
+//                }
+//                temp = temp.substring(temp.length() - 8);
+//                sb.append(temp).append(' ');
+//            }
+
         } else if (isGetCookieRequest(req)) {
             sb = getCookieResponse(getPath(req));
         } else if (isEatCookieRequest(req)) {
@@ -281,6 +301,7 @@ public class HttpRequestResponseHandler implements Runnable {
             }
         } else {
             sb.append("HTTP/1.1 " + 401 + " " + "Unauthorized" + "\r\n");
+            sb.append("WWW-Authenticate: Basic\r\n");
             sb.append("Authorization: Basic\r\n");
             sb.append("Date:" + getTimeAndDate() + "\r\n");
             sb.append("Server:localhost\r\n");
@@ -295,17 +316,19 @@ public class HttpRequestResponseHandler implements Runnable {
         StringBuilder sb = new StringBuilder();
 
         sb.append("HTTP/1.1 " + 200 + " " + "OK" + "\r\n");
+        sb.append("Set-Cookie: " + HttpServer.cookies.get(0) + "\r\n");
         sb.append("Date:" + getTimeAndDate() + "\r\n");
         sb.append("Server:localhost\r\n");
         sb.append("Content-Type: text/plain\r\n");
         sb.append("Connection: Closed\r\n\r\n");
 
-//        String body = "mmmm";
-//        for (String cookie: HttpServer.cookies) {
-//            body = body + " " + cookie.split("=")[1];
-//
-//        }
-        sb.append("mmmm chocolate");
+        String body = "mmmm";
+        for (String cookie: HttpServer.cookies) {
+            body = body + " " + cookie.split("=")[1] + "\r\n";
+
+        }
+        sb.append(body);
+//        sb.append("mmmm chocolate\r\n");
         return sb;
     }
 
