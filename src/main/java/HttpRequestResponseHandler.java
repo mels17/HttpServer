@@ -48,6 +48,7 @@ public class HttpRequestResponseHandler implements Runnable {
     }
 
     public void run() {
+        System.out.println("Here in run");
         System.out.println("Thread started with name:" + Thread.currentThread().getName());
 
         try {
@@ -56,6 +57,7 @@ public class HttpRequestResponseHandler implements Runnable {
             e.printStackTrace();
         } finally {
             closeConnection();
+            System.out.println("Thread closed.");
         }
 
 
@@ -111,7 +113,6 @@ public class HttpRequestResponseHandler implements Runnable {
         HttpServer.logs.add(req.split("\r\n")[0]);
 
         if (isGetLogRequest(req)) {
-//            sb = getResponse(401, "Unauthorized", getParams(req));
             sb = getLogInfo(req);
         } else if(isPartialContentRequest(req)) {
             sb = getPartialResponse(req);
@@ -127,11 +128,6 @@ public class HttpRequestResponseHandler implements Runnable {
 
             sb = null;
             String extension = getFileExtension(req);
-//            sb.append("HTTP/1.1 " + 200 + " " + "OK" + "\r\n");
-//            sb.append("Date:" + getTimeAndDate() + "\r\n");
-//            sb.append("Server:localhost\r\n");
-//            sb.append("Content-Type: image/" + extension + "\r\n");
-//            sb.append("Connection: Closed\r\n\r\n");
 
             String responseHeader = "HTTP/1.1 " + 200 + " " + "OK" + "\r\n"
              + "Date:" + getTimeAndDate() + "\r\n"
@@ -150,33 +146,10 @@ public class HttpRequestResponseHandler implements Runnable {
             fis.close();
             out.close();
 
-
-//            BufferedImage image = ImageIO.read(new File("/Users/malavika.vasudevan/IdeaProjects/HttpServer/public" + getPath(req)));
-//            ByteArrayOutputStream b = new ByteArrayOutputStream();
-//            ImageIO.write(image, extension, b);
-//            byte[] byteArray = b.toByteArray();
-//            for(byte by: byteArray) {
-//                sb.append(Integer.toBinaryString(by & 0xFF));
-//            }
-//
-//            sb.append("\r\n");
-
-
-
-//            BufferedInputStream is = new BufferedInputStream(new FileInputStream("/Users/malavika.vasudevan/IdeaProjects/HttpServer/public" + getPath(req)));
-//            for(int i; (i = is.read()) != -1;) {
-//                String temp = "00000000" + Integer.toBinaryString(i).toUpperCase();
-//                if(temp.length() == 1) {
-//                    sb.append('0');
-//                }
-//                temp = temp.substring(temp.length() - 8);
-//                sb.append(temp).append(' ');
-//            }
-
         } else if (isGetCookieRequest(req)) {
             sb = getCookieResponse(getPath(req));
         } else if (isEatCookieRequest(req)) {
-            sb = getEatCookieResponse();
+            sb = getEatCookieResponse(req);
         } else if (isGetAllFilesRequest(req)) {
             sb = constructGetFileLinksResponse();
         } else if (isGeneralRequest(req)) {
@@ -312,7 +285,7 @@ public class HttpRequestResponseHandler implements Runnable {
         return sb;
     }
 
-    private StringBuilder getEatCookieResponse() {
+    private StringBuilder getEatCookieResponse(String req) {
         StringBuilder sb = new StringBuilder();
 
         sb.append("HTTP/1.1 " + 200 + " " + "OK" + "\r\n");
@@ -328,80 +301,84 @@ public class HttpRequestResponseHandler implements Runnable {
 
         }
         sb.append(body);
-//        sb.append("mmmm chocolate\r\n");
         return sb;
     }
 
     private boolean isEatCookieRequest(String req) {
-        return isGetRequest(req) && getPath(req).equals("/eat_cookie");
+        return isGetRequest(req) && getPath(req).equals("/eat_cookie") && req.contains("Cookie");
     }
 
     private StringBuilder getCookieResponse(String path) {
         System.out.println("response");
         StringBuilder sb = new StringBuilder();
 
-        sb = constructResponseHeader(sb, 200, "OK");
+
+        sb.append("HTTP/1.1 " + 200 + " " + "OK" + "\r\n");
+        sb.append("Set-Cookie: " + path.split("\\?")[1] + "\r\n");
+        sb.append("Date:" + getTimeAndDate() + "\r\n");
+        sb.append("Server:localhost\r\n");
+        sb.append("Content-Type: text/html\r\n");
+        sb.append("Connection: Closed\r\n\r\n");
 
         System.out.println(path);
         System.out.println(path.split("\\?")[1]);
         HttpServer.cookies.add(path.split("\\?")[1]);
 
-        //"\\?")[1].split("=")[1]
         System.out.println("Out");
         sb.append("Eat\r\n");
         return sb;
     }
-
-    private BufferedImage getBufferedImage(String req) {
-        String filename = "/Users/malavika.vasudevan/IdeaProjects/HttpServer/public/" + getPath(req).substring(1);
-        File file = new File(filename);
-        BufferedImage bi = null;
-        try {
-            bi = ImageIO.read(file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return bi;
-    }
-
-    private static StringBuilder getResponseForFilesOtherThanText(StringBuilder sb, String req) {
-        String filename = getPath(req).substring(1);
-
-        String imageType = filename.split("\\.")[1];
-        sb.append("HTTP/1.1 " + 200 + " " + "OK" + "\r\n");
-        sb.append("Date:" + getTimeAndDate() + "\r\n");
-        sb.append("Server:localhost\r\n");
-        sb.append("Content-Type: image/" + imageType + "\r\n");
-        sb.append("Connection: Closed\r\n\r\n");
-
-
-        return sb;
-
-    }
-
-    private static byte[] getImageFileContents(String req) {
-        String path = "/Users/malavika.vasudevan/IdeaProjects/HttpServer/public/" + getPath(req).substring(1);
-        byte[] imageInByte = null;
-        try {
-            BufferedImage originalImage = ImageIO.read(new File(path));
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ImageIO.write(originalImage, getFileExtension(req), baos);
-            baos.flush();
-            imageInByte = baos.toByteArray();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-//        File file = new File(path);
-//        try {
-//            FileInputStream in = new FileInputStream(file);
 //
-//        } catch (FileNotFoundException e) {
+//    private BufferedImage getBufferedImage(String req) {
+//        String filename = "/Users/malavika.vasudevan/IdeaProjects/HttpServer/public/" + getPath(req).substring(1);
+//        File file = new File(filename);
+//        BufferedImage bi = null;
+//        try {
+//            bi = ImageIO.read(file);
+//        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
-//        return "";
-        return imageInByte;
-    }
+//        return bi;
+//    }
+//
+//    private static StringBuilder getResponseForFilesOtherThanText(StringBuilder sb, String req) {
+//        String filename = getPath(req).substring(1);
+//
+//        String imageType = filename.split("\\.")[1];
+//        sb.append("HTTP/1.1 " + 200 + " " + "OK" + "\r\n");
+//        sb.append("Date:" + getTimeAndDate() + "\r\n");
+//        sb.append("Server:localhost\r\n");
+//        sb.append("Content-Type: image/" + imageType + "\r\n");
+//        sb.append("Connection: Closed\r\n\r\n");
+//
+//
+//        return sb;
+//
+//    }
+
+//    private static byte[] getImageFileContents(String req) {
+//        String path = "/Users/malavika.vasudevan/IdeaProjects/HttpServer/public/" + getPath(req).substring(1);
+//        byte[] imageInByte = null;
+//        try {
+//            BufferedImage originalImage = ImageIO.read(new File(path));
+//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//            ImageIO.write(originalImage, getFileExtension(req), baos);
+//            baos.flush();
+//            imageInByte = baos.toByteArray();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+////        File file = new File(path);
+////        try {
+////            FileInputStream in = new FileInputStream(file);
+////
+////        } catch (FileNotFoundException e) {
+////            e.printStackTrace();
+////        }
+////        return "";
+//        return imageInByte;
+//    }
 
     private StringBuilder constructFourEighteenResponse(String req) {
         StringBuilder sb = new StringBuilder();
