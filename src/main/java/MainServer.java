@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.Base64;
 
 public class MainServer {
 
@@ -14,8 +15,10 @@ public class MainServer {
             System.out.println("The input is not a directory");
             return;
         }
-
-        System.out.println("image.jpeg".split("\\.")[1]);
+//        System.out.println(new File("/Users/malavika.vasudevan/IdeaProjects/HttpServer/public/partial_content.txt").length());
+//        System.out.println(new String(Base64.getDecoder().decode("YWRtaW46aHVudGVyMg==")));
+        System.out.println("4-".split("-").length);
+        System.out.println("4-".split("-")[0]);
         HttpServer httpServer = new HttpServer(arguments.getPort(), directory);
         httpServer.run();
     }

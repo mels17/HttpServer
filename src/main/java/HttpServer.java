@@ -4,6 +4,8 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -26,6 +28,8 @@ public class HttpServer {
     private int _port;
     private File _directory;
     ExecutorService pool = Executors.newFixedThreadPool(10);
+    public static List<String> cookies = new ArrayList<String>();
+    public static List<String> logs = new ArrayList<String>();
 
     private String errorMessage;
 
