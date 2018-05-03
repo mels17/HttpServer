@@ -1,11 +1,6 @@
-import javax.imageio.ImageIO;
-import javax.xml.crypto.Data;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.Socket;
 import java.net.URLDecoder;
-import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -267,7 +262,6 @@ public class HttpRequestResponseHandler implements Runnable {
             }
         }
         if(username.equals("admin") && password.equals("hunter2")){
-            // has access
             sb = constructResponseHeader(sb, 200, "OK");
             for (String log: HttpServer.logs) {
                 sb.append(log + "\r\n");
@@ -328,57 +322,7 @@ public class HttpRequestResponseHandler implements Runnable {
         sb.append("Eat\r\n");
         return sb;
     }
-//
-//    private BufferedImage getBufferedImage(String req) {
-//        String filename = "/Users/malavika.vasudevan/IdeaProjects/HttpServer/public/" + getPath(req).substring(1);
-//        File file = new File(filename);
-//        BufferedImage bi = null;
-//        try {
-//            bi = ImageIO.read(file);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        return bi;
-//    }
-//
-//    private static StringBuilder getResponseForFilesOtherThanText(StringBuilder sb, String req) {
-//        String filename = getPath(req).substring(1);
-//
-//        String imageType = filename.split("\\.")[1];
-//        sb.append("HTTP/1.1 " + 200 + " " + "OK" + "\r\n");
-//        sb.append("Date:" + getTimeAndDate() + "\r\n");
-//        sb.append("Server:localhost\r\n");
-//        sb.append("Content-Type: image/" + imageType + "\r\n");
-//        sb.append("Connection: Closed\r\n\r\n");
-//
-//
-//        return sb;
-//
-//    }
 
-//    private static byte[] getImageFileContents(String req) {
-//        String path = "/Users/malavika.vasudevan/IdeaProjects/HttpServer/public/" + getPath(req).substring(1);
-//        byte[] imageInByte = null;
-//        try {
-//            BufferedImage originalImage = ImageIO.read(new File(path));
-//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//            ImageIO.write(originalImage, getFileExtension(req), baos);
-//            baos.flush();
-//            imageInByte = baos.toByteArray();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-////        File file = new File(path);
-////        try {
-////            FileInputStream in = new FileInputStream(file);
-////
-////        } catch (FileNotFoundException e) {
-////            e.printStackTrace();
-////        }
-////        return "";
-//        return imageInByte;
-//    }
 
     private StringBuilder constructFourEighteenResponse(String req) {
         StringBuilder sb = new StringBuilder();
@@ -554,14 +498,6 @@ public class HttpRequestResponseHandler implements Runnable {
         String filename = getPath(req).substring(1);
         StringBuilder sb = new StringBuilder();
 
-//        if(filename.contains(".jpeg") || filename.contains(".png") || filename.contains("gif")) {
-//            try {
-//                return getResponseForFilesOtherThanText(sb, filename);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
-
         if (containsContentRangeInRequestHeader(req)) {
             sb = getPartialResponseHeader(sb, req, filename);
         } else {
@@ -594,9 +530,6 @@ public class HttpRequestResponseHandler implements Runnable {
     }
 
     private static String getTextFileContents(String filename) throws IOException {
-//        if(!filename.contains(".")) {
-//            filename += ".txt";
-//        }
         String path = "/Users/malavika.vasudevan/IdeaProjects/HttpServer/public/" + filename;
         return new String(Files.readAllBytes(Paths.get(path)), "UTF-8");
     }
@@ -664,14 +597,6 @@ public class HttpRequestResponseHandler implements Runnable {
         return path.contains("=") ? path.split("=")[1] : "World";
     }
 
-//    private static ByteRange getByteRangeParams(String request) {
-//        ByteRange br = new ByteRange();
-//        String path = getPath(request);
-//        String[] params = path.split("&");
-//        br.setStart(Integer.parseInt(params[0].split("=")[1]));
-//        br.setEnd(Integer.parseInt(params[1].split("=")[1]));
-//        return br;
-//    }
 
     private static String getTimeAndDate() {
         Date date = new Date();
