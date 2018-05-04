@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Date;
+import java.util.HashMap;
 
 public class HttpRequestResponseHandler implements Runnable {
     private static File _directory;
@@ -76,7 +77,6 @@ public class HttpRequestResponseHandler implements Runnable {
         BufferedReader in = new BufferedReader(request);
 
         String req = getRequestHeader(in);
-        StringBuilder sb = new StringBuilder();
 
         //* matt
         /****
@@ -107,65 +107,70 @@ public class HttpRequestResponseHandler implements Runnable {
 
         HttpServer.logs.add(req.split("\r\n")[0]);
 
-        if (isGetLogRequest(req)) {
-            sb = getLogInfo(req);
-        } else if(isPartialContentRequest(req)) {
-            sb = getPartialResponse(req);
-        } else if (isRedirectGet(req)) {
-            sb = constructRedirectResponse(req);
-        } else if (isGetCoffee(req)) {
-            sb = constructFourEighteenResponse(req);
-        } else if (isGetTea(req)) {
-            sb = getResponse(200, "OK", "");
-        } else if (isGetWithParameterPath(req)) {
-            sb = constructResponseForGetWithParameters(req);
-        } else if (isGetImageFileRequest(req)) {
+        String route = getPath(req);
+        HashMap<String, HttpResponseCommand> router = HttpServer.initializeRouter();
+        HttpResponseCommand command = router.get(route);
+        StringBuilder sb = command.process();
 
-            sb = null;
-            String extension = getFileExtension(req);
-
-            String responseHeader = "HTTP/1.1 " + 200 + " " + "OK" + "\r\n"
-             + "Date:" + getTimeAndDate() + "\r\n"
-             + "Server:localhost\r\n"
-             + "Content-Type: image/" + extension + "\r\n"
-             + "Connection: Closed\r\n\r\n";
-
-            out.write(responseHeader.getBytes());
-
-            FileInputStream fis = new FileInputStream("/Users/malavika.vasudevan/IdeaProjects/HttpServer/public" + getPath(req));
-            DataOutputStream ds = new DataOutputStream(out);
-            int i;
-            while ((i = fis.read()) > -1)
-                out.write(i);
-
-            fis.close();
-            out.close();
-
-        } else if (isGetCookieRequest(req)) {
-            sb = getCookieResponse(getPath(req));
-        } else if (isEatCookieRequest(req)) {
-            sb = getEatCookieResponse(req);
-        } else if (isGetAllFilesRequest(req)) {
-            sb = constructGetFileLinksResponse();
-        } else if (isGeneralRequest(req)) {
-            sb = getResponse(200, "OK", getParams(req));
-        } else if (isGetRequest(req)) {
-            sb = getResponseForTextFile(req);
-        } else if (isPatchRequest(req)) {
-            sb = getPatchResponse(req);
-        } else if (isPutRequest(req)) {
-            sb = getPutResponse(req);
-        } else if (isPostRequest(req)) {
-            sb = getPostResponse(req);
-        } else if (isHeadRequest(req)) {
-            sb = getHeadResponse(req);
-        } else if (isOptionsRequest(req)) {
-            sb = constructOptionsResponse(req);
-        } else if (isDeleteRequest(req)) {
-            sb = getDeleteResponse(req);
-        } else {
-            sb = constructGeneralResponse(new StringBuilder(), 405, "Method Not Allowed");
-        }
+//        if (isGetLogRequest(req)) {
+//            sb = getLogInfo(req);
+//        } else if(isPartialContentRequest(req)) {
+//            sb = getPartialResponse(req);
+//        } else if (isRedirectGet(req)) {
+//            sb = constructRedirectResponse(req);
+//        } else if (isGetCoffee(req)) {
+//            sb = constructFourEighteenResponse(req);
+//        } else if (isGetTea(req)) {
+//            sb = getResponse(200, "OK", "");
+//        } else if (isGetWithParameterPath(req)) {
+//            sb = constructResponseForGetWithParameters(req);
+//        } else if (isGetImageFileRequest(req)) {
+//
+//            sb = null;
+//            String extension = getFileExtension(req);
+//
+//            String responseHeader = "HTTP/1.1 " + 200 + " " + "OK" + "\r\n"
+//             + "Date:" + getTimeAndDate() + "\r\n"
+//             + "Server:localhost\r\n"
+//             + "Content-Type: image/" + extension + "\r\n"
+//             + "Connection: Closed\r\n\r\n";
+//
+//            out.write(responseHeader.getBytes());
+//
+//            FileInputStream fis = new FileInputStream("/Users/malavika.vasudevan/IdeaProjects/HttpServer/public" + getPath(req));
+//            DataOutputStream ds = new DataOutputStream(out);
+//            int i;
+//            while ((i = fis.read()) > -1)
+//                out.write(i);
+//
+//            fis.close();
+//            out.close();
+//
+//        } else if (isGetCookieRequest(req)) {
+//            sb = getCookieResponse(getPath(req));
+//        } else if (isEatCookieRequest(req)) {
+//            sb = getEatCookieResponse(req);
+//        } else if (isGetAllFilesRequest(req)) {
+//            sb = constructGetFileLinksResponse();
+//        } else if (isGeneralRequest(req)) {
+//            sb = getResponse(200, "OK", getParams(req));
+//        } else if (isGetRequest(req)) {
+//            sb = getResponseForTextFile(req);
+//        } else if (isPatchRequest(req)) {
+//            sb = getPatchResponse(req);
+//        } else if (isPutRequest(req)) {
+//            sb = getPutResponse(req);
+//        } else if (isPostRequest(req)) {
+//            sb = getPostResponse(req);
+//        } else if (isHeadRequest(req)) {
+//            sb = getHeadResponse(req);
+//        } else if (isOptionsRequest(req)) {
+//            sb = constructOptionsResponse(req);
+//        } else if (isDeleteRequest(req)) {
+//            sb = getDeleteResponse(req);
+//        } else {
+//            sb = constructGeneralResponse(new StringBuilder(), 405, "Method Not Allowed");
+//        }
 
         if (sb != null) {
             response.write(sb.toString());
@@ -544,7 +549,7 @@ public class HttpRequestResponseHandler implements Runnable {
         return sb;
     }
 
-    private static StringBuilder constructResponseHeader(StringBuilder sb, int statusCode, String status) {
+    public static StringBuilder constructResponseHeader(StringBuilder sb, int statusCode, String status) {
         sb.append("HTTP/1.1 " + statusCode + " " + status + "\r\n");
         sb.append("Date:" + getTimeAndDate() + "\r\n");
         sb.append("Server:localhost\r\n");

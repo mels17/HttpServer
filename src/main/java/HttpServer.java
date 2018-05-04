@@ -1,10 +1,10 @@
 import java.io.File;
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -31,6 +31,8 @@ public class HttpServer {
     public static List<String> cookies = new ArrayList<String>();
     public static List<String> logs = new ArrayList<String>();
 
+    private static HashMap<String, HttpResponseCommand> router = new HashMap<String, HttpResponseCommand>();
+
     private String errorMessage;
 
     public HttpServer(int port, File directory) {
@@ -38,7 +40,16 @@ public class HttpServer {
         _directory = directory;
 
         logger = Logger.getLogger("java-httpserver");
+
+        initializeRouter();
     }
+
+    public static HashMap<String, HttpResponseCommand> initializeRouter() {
+        router.put("/coffee", new CoffeeResponse());
+        router.put("/tea", new TeaPartyResponse());
+        return router;
+    }
+
 
     public void run(){
         try (ServerSocket socket = new ServerSocket(_port)){
