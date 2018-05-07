@@ -11,10 +11,6 @@ public class RequestParser {
         return request.split("\r\n\r\n")[0].split("\r\n");
     }
 
-    public static String getRequestType(String request) {
-        return request.split("\\s")[0];
-    }
-
     public static String getQueryString(String request) {
         String[] urlStrings = request.split("\\?");
         return (urlStrings.length == 2) ? urlStrings[1].split("\\s")[0] : "";
@@ -34,20 +30,6 @@ public class RequestParser {
 
     public static String getPath(String request) {
         return request.split("\\s")[1];
-    }
-
-    public static String getRequestStringFromBufferedReader(BufferedReader request) throws IOException {
-        StringBuilder requestString = new StringBuilder();
-        int inputChar;
-        do {
-            inputChar = request.read();
-            requestString.append(Character.toChars(inputChar));
-        }
-        while (request.ready());
-
-        System.out.println(requestString);
-
-        return requestString.toString();
     }
 
     private static String getHeaderThatContainsThisString(String request, String headerProperty) {
@@ -87,10 +69,63 @@ public class RequestParser {
             r.append(Character.toChars(inputChar));
         }
         while (request.ready());
-
         System.out.println(r);
-
         return r.toString();
+    }
+
+    public static boolean containsContentRangeInRequestHeader(String request) {
+        return request.contains("Range");
+    }
+
+    public static ByteRange getContentRange(String req) {
+        String[] reqContent = req.split("\r\n");
+        ByteRange br = new ByteRange();
+        for (String line : reqContent) {
+            if (line.startsWith("Range")) {
+                String[] range = line.split("\\s")[2].split("/")[0].split("-");
+                br.setStart(Long.parseLong(range[0]));
+                br.setEnd(Long.parseLong(range[1]));
+            }
+        }
+        return br;
+    }
+
+    public static ByteRange getContentRangeFromHeader(String request, Long bytes) {
+        ByteRange byteRange = new ByteRange();
+        String[] headers = request.split("\r\n");
+        for (String header: headers) {
+            if(header.contains("Range")) {
+                String[] range = header.split("=")[1].split("-");
+
+                Long uncheckedStart = Long.valueOf(0);
+                Long uncheckedEnd = Long.valueOf(0);
+
+                if(range.length == 1) {
+                    uncheckedStart = Long.valueOf(range[0]);
+                    uncheckedEnd = bytes - 1;
+                } else {
+                    if(range[0].equals("")) {
+                        uncheckedStart = Long.valueOf(71);
+                        uncheckedEnd = Long.valueOf(Integer.parseInt(range[1]) + 70);
+                    } else if(!range[0].isEmpty() && !range[1].isEmpty()) {
+                        uncheckedEnd = Long.valueOf(range[1]);
+                        uncheckedStart = Long.valueOf(range[0]);
+                    }
+                }
+
+
+
+                if(uncheckedStart >= 0 && uncheckedStart < bytes && uncheckedEnd > 0 && uncheckedEnd <= bytes && uncheckedStart <= uncheckedEnd) {
+                    byteRange.setStart(uncheckedStart);
+                    byteRange.setEnd(uncheckedEnd);
+                } else {
+                    byteRange.setStart(Long.valueOf(0));
+                    byteRange.setEnd(Long.valueOf(bytes - 1));
+
+                }
+            }
+        }
+        return byteRange;
     }
 
 }

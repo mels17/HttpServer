@@ -9,11 +9,15 @@ public class PutResponse implements HttpResponseCommand {
             if (content.equals("")) return new ResponseConstructor(405, "Method Not Allowed",
                     "Standard", "text/plain").getResponse();
             try {
-                ResponseConstructor.overWriteFile(filename, content);
+                FileOperations.overWriteFile(filename, content);
             } catch (IOException e) {
-                return new ResponseConstructor(404, "Not Found", "Standard", "text/plain").getResponse();
+                return new ResponseConstructor(404, "Not Found",
+                        "Standard", "text/plain")
+                        .getResponse();
             }
         }
-        return new ResponseConstructor(200, "OK", "Standard", "text/plain").getResponse();
+        return new ResponseConstructor(200, "OK",
+                "Standard", "text/plain")
+                .getResponse();
     }
 }

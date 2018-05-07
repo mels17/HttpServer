@@ -10,8 +10,7 @@ public class ImageResponse implements HttpResponseCommand {
 
         try {
             HttpRequestResponseHandler.out.write(responseHeader.getBytes());
-            FileInputStream fis = new FileInputStream("/Users/malavika.vasudevan/IdeaProjects/HttpServer/public" + RequestParser.getPath(request));
-            DataOutputStream ds = new DataOutputStream(HttpRequestResponseHandler.out);
+            FileInputStream fis = new FileInputStream(Constants.PUBLIC_DIR_PATH + RequestParser.getPath(request));
             int i;
             while ((i = fis.read()) > -1)
                 HttpRequestResponseHandler.out.write(i);

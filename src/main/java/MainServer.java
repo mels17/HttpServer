@@ -5,7 +5,7 @@ public class MainServer {
 
     public static void main(String[] args) throws IOException {
         HttpServerArguments arguments = HttpServerArguments.createServerArguments(args);
-        File directory = new File("/Users/malavika.vasudevan/IdeaProjects/HttpServer/public");
+        File directory = new File(Constants.PUBLIC_DIR_PATH);
         if (!directory.exists()) {
             System.out.println("Directory cannot be found!");
             return;

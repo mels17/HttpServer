@@ -1,9 +1,3 @@
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -51,29 +45,12 @@ public class ResponseConstructor {
         return _response;
     }
 
-    public static void overWriteFile(String filename, String content) throws IOException {
-        BufferedWriter out = new BufferedWriter(new FileWriter("/Users/malavika.vasudevan/IdeaProjects/HttpServer/public/" + filename));
-        out.write(content);
-        out.close();
-    }
-
     public static StringBuilder getPostResponseHeaderWithRedirect(String newFile) {
         StringBuilder sb = new StringBuilder();
         sb.append("HTTP/1.1 " + 201 + " " + "Created" + "\r\n");
         sb.append("Location: /cat-form/" + newFile + "\r\n\r\n");
 
         return sb;
-    }
-
-    public static String getTextFileContents(String filename) throws IOException {
-        String path = "/Users/malavika.vasudevan/IdeaProjects/HttpServer/public/" + filename;
-        return new String(Files.readAllBytes(Paths.get(path)), "UTF-8");
-    }
-
-    public static void deleteFile(String filename) {
-        String filePath = "/Users/malavika.vasudevan/IdeaProjects/HttpServer/public";
-        File file = new File(filePath + filename);
-        if (file.exists() && !file.isDirectory()) file.delete();
     }
 
     public static String constructImageHeader(String extension) {
@@ -84,26 +61,9 @@ public class ResponseConstructor {
         + "Connection: Closed\r\n\r\n";
     }
 
-    public static boolean containsContentRangeInRequestHeader(String request) {
-        return request.contains("Range");
-    }
-
-    public static String getPartialResponseHeader(StringBuilder sb, String request, String filename) {
-        ByteRange br = getContentRange(request);
-//        sb.append("HTTP/1.1 " + 206 + " " + "Partial Content" + "\r\n");
+    public static String getAdditionalHeaderForPartialResponse(String request) {
+        ByteRange br = RequestParser.getContentRange(request);
         return "Accept-Ranges: bytes" + "Content-Range: bytes " + br.get_start() + "-" + br.get_end() + "\r\n\r\n";
     }
 
-    private static ByteRange getContentRange(String req) {
-        String[] reqContent = req.split("\r\n");
-        ByteRange br = new ByteRange();
-        for (String line : reqContent) {
-            if (line.startsWith("Range")) {
-                String[] range = line.split("\\s")[2].split("/")[0].split("-");
-                br.setStart(Integer.parseInt(range[0]));
-                br.setEnd(Integer.parseInt(range[1]));
-            }
-        }
-        return br;
-    }
 }

@@ -3,13 +3,7 @@ import java.util.HashMap;
 public class Constants {
     public static final int PORT = 5000;
     public static final String DIRECTORY = "public";
-    public static final String GET_REQUEST = "GET";
-    public static final String POST_REQUEST = "POST";
-    public static final String PUT_REQUEST = "PUT";
-    public static final String HEAD_REQUEST = "HEAD";
-    public static final String OPTIONS_REQUEST = "OPTIONS";
-    public static final String PATCH_REQUEST = "PATCH";
-    public static final String DELETE_REQUEST = "DELETE";
+    public static final String PUBLIC_DIR_PATH = "/Users/malavika.vasudevan/IdeaProjects/HttpServer/public";
 
     public static final HashMap<Integer, String> HTTP_CODES_AND_MESSAGES = new HashMap<Integer, String>() {
         {
@@ -21,6 +15,7 @@ public class Constants {
             put(302, "Found");
             put(204, "No Content");
             put(206, "Partial Content");
+            put(416, "Range Not Satisfiable");
         }
     };
 }

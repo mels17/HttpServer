@@ -74,15 +74,6 @@ public class HttpServer {
         route.put("(?s).*\\bDELETE\\b.*", new DeleteResponse());
         route.put("(?s).*\\bPATCH\\b.*", new PatchResponse());
 
-//        route.put("^((?!(GET|HEAD|OPTIONS|PUT|POST|DELETE|PATCH)).)*$\n", new DefaultResponse());
-
-
-//      route.put("^HEAD.*$", new HeadResponse());
-//        route.put("^OPTIONS.*$", new OptionsResponse());
-//        route.put("^PUT.*$", new PutResponse());
-//        route.put("^POST.*$", new PostResponse());
-//        route.put("^GET.*$", new FileLinksGetResponse());
-
         return route;
     }
 
