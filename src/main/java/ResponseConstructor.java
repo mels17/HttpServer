@@ -1,4 +1,5 @@
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -32,7 +33,7 @@ public class ResponseConstructor {
         return _response;
     }
 
-    private StringBuilder constructResponseHeader() {
+    public StringBuilder constructResponseHeader() {
         _response.append("HTTP/1.1 " + _statusCode + " " + Constants.HTTP_CODES_AND_MESSAGES.get(_statusCode) + "\r\n");
         if(!_additionalHeaderOrNot.equals("Standard")) _response.append(_additionalHeaderOrNot);
         _response.append("Date:" + getTimeAndDate() + "\r\n");
@@ -66,4 +67,11 @@ public class ResponseConstructor {
         String path = "/Users/malavika.vasudevan/IdeaProjects/HttpServer/public/" + filename;
         return new String(Files.readAllBytes(Paths.get(path)), "UTF-8");
     }
+
+    public static void deleteFile(String filename) {
+        String filePath = "/Users/malavika.vasudevan/IdeaProjects/HttpServer/public";
+        File file = new File(filePath + filename);
+        if (file.exists() && !file.isDirectory()) file.delete();
+    }
+
 }
