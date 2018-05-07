@@ -60,6 +60,7 @@ public class HttpServer {
         route.put("GET /logs", new LogResponse());
         route.put("^HEAD.*$", new HeadResponse());
         route.put("^OPTIONS.*$", new OptionsResponse());
+        route.put("^PUT.*$", new PutResponse());
 
         return route;
     }

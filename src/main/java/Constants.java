@@ -17,6 +17,7 @@ public class Constants {
             put(418, "I'm a teapot");
             put(401, "Unauthorized");
             put(404, "Not Found");
+            put(405, "Method Not Allowed");
         }
     };
 }

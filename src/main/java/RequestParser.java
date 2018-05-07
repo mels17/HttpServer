@@ -72,5 +72,11 @@ public class RequestParser {
         return usernameAndPassword[0].equals(USERNAME) && usernameAndPassword[1].equals(PASSWORD);
     }
 
+    public static String getDataFromRequest(String req) {
+        if (req.split("\r\n\r\n").length == 2) {
+            return req.split("\r\n\r\n")[1];
+        }
+        return "";
+    }
 
 }

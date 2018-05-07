@@ -1,3 +1,6 @@
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -41,5 +44,11 @@ public class ResponseConstructor {
     private StringBuilder constructResponseBody() {
         _response.append(_responseContent);
         return _response;
+    }
+
+    public static void overWriteFile(String filename, String content) throws IOException {
+        BufferedWriter out = new BufferedWriter(new FileWriter("/Users/malavika.vasudevan/IdeaProjects/HttpServer/public/" + filename));
+        out.write(content);
+        out.close();
     }
 }
