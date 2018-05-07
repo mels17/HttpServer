@@ -1,6 +1,8 @@
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -50,5 +52,18 @@ public class ResponseConstructor {
         BufferedWriter out = new BufferedWriter(new FileWriter("/Users/malavika.vasudevan/IdeaProjects/HttpServer/public/" + filename));
         out.write(content);
         out.close();
+    }
+
+    public static StringBuilder getPostResponseHeaderWithRedirect(String newFile) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("HTTP/1.1 " + 201 + " " + "Created" + "\r\n");
+        sb.append("Location: /cat-form/" + newFile + "\r\n\r\n");
+
+        return sb;
+    }
+
+    public static String getTextFileContents(String filename) throws IOException {
+        String path = "/Users/malavika.vasudevan/IdeaProjects/HttpServer/public/" + filename;
+        return new String(Files.readAllBytes(Paths.get(path)), "UTF-8");
     }
 }

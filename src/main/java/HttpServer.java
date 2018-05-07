@@ -55,12 +55,24 @@ public class HttpServer {
     public static RegExHashMap<String, HttpResponseCommand> initializeRegexMap() {
         RegExHashMap<String, HttpResponseCommand> route = new RegExHashMap<String, HttpResponseCommand>();
 
-        route.put("GET /coffee", new CoffeeResponse());
-        route.put("GET /tea", new TeaPartyResponse());
-        route.put("GET /logs", new LogResponse());
-        route.put("^HEAD.*$", new HeadResponse());
-        route.put("^OPTIONS.*$", new OptionsResponse());
-        route.put("^PUT.*$", new PutResponse());
+        //
+        route.put("(?s).*\\bGET /coffee\\b.*", new CoffeeResponse());
+        route.put("(?s).*\\bGET /tea\\b.*", new TeaPartyResponse());
+        route.put("(?s).*\\bGET /logs\\b.*", new LogResponse());
+        route.put("(?s).*\\bHEAD\\b.*", new HeadResponse());
+        route.put("(?s).*\\bOPTIONS\\b.*", new OptionsResponse());
+        route.put("(?s).*\\bPUT\\b.*", new PutResponse());
+        route.put("(?s).*\\bPOST\\b.*", new PostResponse());
+        route.put("(?s).*\\bGET / \\b.*", new GetResponse());
+        route.put("(?s).*\\bGET /redirect\\b.*", new GetRedirect());
+//
+//
+//      route.put("^HEAD.*$", new HeadResponse());
+//        route.put("^OPTIONS.*$", new OptionsResponse());
+//        route.put("^PUT.*$", new PutResponse());
+//        route.put("^POST.*$", new PostResponse());
+//        route.put("^GET.*$", new GetResponse());
+        route.put("(?s).*\\bGET\\b.*\\b/\\b.*\\bRange\\b.*", new PartialContentResponse());
 
         return route;
     }

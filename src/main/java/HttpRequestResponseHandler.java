@@ -112,7 +112,8 @@ public class HttpRequestResponseHandler implements Runnable {
 //        HashMap<String, HttpResponseCommand> router = HttpServer.initializeRouter();
 
         RegExHashMap<String, HttpResponseCommand> routeMap = HttpServer.initializeRegexMap();
-        StringBuilder sb = routeMap.get(requestType + " " + route).process(requestString);
+        StringBuilder sb = routeMap.get(requestString).process(requestString);
+
 
 //        HttpResponseCommand command = router.get(key);
 //        StringBuilder sb = command.process(requestString);
