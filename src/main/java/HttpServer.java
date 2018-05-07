@@ -45,9 +45,23 @@ public class HttpServer {
     }
 
     public static HashMap<String, HttpResponseCommand> initializeRouter() {
-        router.put("/coffee", new CoffeeResponse());
-        router.put("/tea", new TeaPartyResponse());
+        router.put("GET /coffee", new CoffeeResponse());
+        router.put("GET /tea", new TeaPartyResponse());
+        router.put("GET /logs", new LogResponse());
+        router.put("^HEAD.*$", new HeadResponse());
         return router;
+    }
+
+    public static RegExHashMap<String, HttpResponseCommand> initializeRegexMap() {
+        RegExHashMap<String, HttpResponseCommand> route = new RegExHashMap<String, HttpResponseCommand>();
+
+        route.put("GET /coffee", new CoffeeResponse());
+        route.put("GET /tea", new TeaPartyResponse());
+        route.put("GET /logs", new LogResponse());
+        route.put("^HEAD.*$", new HeadResponse());
+        route.put("^OPTIONS.*$", new OptionsResponse());
+
+        return route;
     }
 
 

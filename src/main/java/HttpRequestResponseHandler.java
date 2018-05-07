@@ -76,7 +76,7 @@ public class HttpRequestResponseHandler implements Runnable {
         response = new OutputStreamWriter(out);
         BufferedReader in = new BufferedReader(request);
 
-        String req = getRequestHeader(in);
+        String requestString = getRequestHeader(in);
 
         //* matt
         /****
@@ -104,13 +104,18 @@ public class HttpRequestResponseHandler implements Runnable {
 //            reponse = handler.process();
 //            return reponse;
 
+        HttpServer.logs.add(requestString.split("\r\n")[0]);
 
-        HttpServer.logs.add(req.split("\r\n")[0]);
+        String route = getPath(requestString);
+        String requestType = RequestParser.getRequestType(requestString);
+//        String key = requestType + " " + route;
+//        HashMap<String, HttpResponseCommand> router = HttpServer.initializeRouter();
 
-        String route = getPath(req);
-        HashMap<String, HttpResponseCommand> router = HttpServer.initializeRouter();
-        HttpResponseCommand command = router.get(route);
-        StringBuilder sb = command.process();
+        RegExHashMap<String, HttpResponseCommand> routeMap = HttpServer.initializeRegexMap();
+        StringBuilder sb = routeMap.get(requestType + " " + route).process(requestString);
+
+//        HttpResponseCommand command = router.get(key);
+//        StringBuilder sb = command.process(requestString);
 
 //        if (isGetLogRequest(req)) {
 //            sb = getLogInfo(req);

@@ -15,6 +15,8 @@ public class Constants {
         {
             put(200, "OK");
             put(418, "I'm a teapot");
+            put(401, "Unauthorized");
+            put(404, "Not Found");
         }
     };
 }

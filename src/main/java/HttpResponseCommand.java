@@ -1,3 +1,3 @@
 public interface HttpResponseCommand {
-    StringBuilder process();
+    StringBuilder process(String request);
 }
