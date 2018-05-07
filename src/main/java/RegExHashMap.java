@@ -43,6 +43,8 @@ public class RegExHashMap<K, V> extends HashMap<K, V> {
                 return regExValues.get(i);
             }
         }
-        return super.get(key);
+
+//        return super.get(key);
+        return (V) new DefaultResponse();
     }
 }

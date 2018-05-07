@@ -3,10 +3,10 @@ public class LogResponse implements HttpResponseCommand {
     public StringBuilder process(String request) {
         boolean isAuthorized = RequestParser.isAuthorizedToAccessLog(request);
         if (isAuthorized) {
-            return new ResponseConstructor(200, getLogs(), "Standard").getResponse();
+            return new ResponseConstructor(200, getLogs(), "Standard", "text/plain").getResponse();
         }
         String additionalHeader = "WWW-Authenticate: Basic\r\n" + "Authorization: Basic\r\n";
-        return new ResponseConstructor(401, "Logs Access Denied", additionalHeader).getResponse();
+        return new ResponseConstructor(401, "Logs Access Denied", additionalHeader, "text/plain").getResponse();
     }
 
     private String getLogs() {

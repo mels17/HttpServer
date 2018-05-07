@@ -20,6 +20,7 @@ public class Constants {
             put(405, "Method Not Allowed");
             put(302, "Found");
             put(204, "No Content");
+            put(206, "Partial Content");
         }
     };
 }

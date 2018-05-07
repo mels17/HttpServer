@@ -1,5 +1,5 @@
 import java.io.File;
-public class GetResponse implements HttpResponseCommand {
+public class FileLinksGetResponse implements HttpResponseCommand {
     @Override
     public StringBuilder process(String request) {
         File _directory = new File("/Users/malavika.vasudevan/IdeaProjects/HttpServer/public");;

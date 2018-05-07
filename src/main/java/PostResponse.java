@@ -9,7 +9,7 @@ public class PostResponse implements HttpResponseCommand{
         String path = RequestParser.getPath(request);
         String filePath = "/Users/malavika.vasudevan/IdeaProjects/HttpServer/public/";
         String content = RequestParser.getDataFromRequest(request);
-        if (content.equals("")) return new ResponseConstructor(405, "Method Not Allowed", "Standard").getResponse();
+        if (content.equals("")) return new ResponseConstructor(405, "Method Not Allowed", "Standard", "text/plain").getResponse();
         if (path.equals("/cat-form")) {
             filePath += path.substring(1);
 
@@ -25,6 +25,6 @@ public class PostResponse implements HttpResponseCommand{
                 e.printStackTrace();
             }
         }
-        return new ResponseConstructor(200, "OK", "Standard").getResponse();
+        return new ResponseConstructor(200, "OK", "Standard", "text/plain").getResponse();
     }
 }

@@ -9,6 +9,6 @@ public class PatchResponse implements HttpResponseCommand {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return new ResponseConstructor(204, "No Content", "Standard").constructResponseHeader();
+        return new ResponseConstructor(204, "No Content", "Standard", "text/plain").constructResponseHeader();
     }
 }

@@ -7,6 +7,6 @@ public class EatCookieResponse implements HttpResponseCommand {
         }
 
         return new ResponseConstructor(200, body, "Set-Cookie: "
-                + HttpServer.cookies.get(0) + "\r\n").getResponse();
+                + HttpServer.cookies.get(0) + "\r\n", "text/plain").getResponse();
     }
 }

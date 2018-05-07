@@ -79,4 +79,18 @@ public class RequestParser {
         return "";
     }
 
+    public static String getRequestString(BufferedReader request) throws IOException {
+        StringBuilder r = new StringBuilder();
+        int inputChar;
+        do {
+            inputChar = request.read();
+            r.append(Character.toChars(inputChar));
+        }
+        while (request.ready());
+
+        System.out.println(r);
+
+        return r.toString();
+    }
+
 }

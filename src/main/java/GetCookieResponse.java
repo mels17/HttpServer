@@ -4,6 +4,6 @@ public class GetCookieResponse implements HttpResponseCommand {
         String path = RequestParser.getPath(request);
         HttpServer.cookies.add(path.split("\\?")[1]);
         return new ResponseConstructor(200, "Eat\r\n", "Set-Cookie: "
-                + path.split("\\?")[1] + "\r\n").getResponse();
+                + path.split("\\?")[1] + "\r\n", "text/plain").getResponse();
     }
 }

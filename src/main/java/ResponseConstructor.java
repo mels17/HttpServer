@@ -13,15 +13,17 @@ public class ResponseConstructor {
     private int _statusCode;
     private String _responseContent;
     private String _additionalHeaderOrNot;
+    private String _contentType;
 
-    public ResponseConstructor(int statusCode, String content, String stringToAddToHeaderOrStandard) {
+    public ResponseConstructor(int statusCode, String content, String stringToAddToHeaderOrStandard, String contentType) {
         _response = new StringBuilder();
         _statusCode = statusCode;
         _responseContent = content;
         _additionalHeaderOrNot = stringToAddToHeaderOrStandard;
+        _contentType = contentType;
     }
 
-    private String getTimeAndDate() {
+    private static String getTimeAndDate() {
         Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
         return sdf.format(date);
@@ -38,7 +40,7 @@ public class ResponseConstructor {
         if(!_additionalHeaderOrNot.equals("Standard")) _response.append(_additionalHeaderOrNot);
         _response.append("Date:" + getTimeAndDate() + "\r\n");
         _response.append("Server:localhost\r\n");
-        _response.append("Content-Type: text/html\r\n");
+        _response.append("Content-Type: " + _contentType + "\r\n");
         _response.append("Connection: Closed\r\n\r\n");
 
         return _response;
@@ -74,4 +76,34 @@ public class ResponseConstructor {
         if (file.exists() && !file.isDirectory()) file.delete();
     }
 
+    public static String constructImageHeader(String extension) {
+        return "HTTP/1.1 " + 200 + " " + Constants.HTTP_CODES_AND_MESSAGES.get(200) + "\r\n"
+        + "Date:" + getTimeAndDate() + "\r\n"
+        + "Server:localhost\r\n"
+        + "Content-Type: image/" + extension + "\r\n"
+        + "Connection: Closed\r\n\r\n";
+    }
+
+    public static boolean containsContentRangeInRequestHeader(String request) {
+        return request.contains("Range");
+    }
+
+    public static String getPartialResponseHeader(StringBuilder sb, String request, String filename) {
+        ByteRange br = getContentRange(request);
+//        sb.append("HTTP/1.1 " + 206 + " " + "Partial Content" + "\r\n");
+        return "Accept-Ranges: bytes" + "Content-Range: bytes " + br.get_start() + "-" + br.get_end() + "\r\n\r\n";
+    }
+
+    private static ByteRange getContentRange(String req) {
+        String[] reqContent = req.split("\r\n");
+        ByteRange br = new ByteRange();
+        for (String line : reqContent) {
+            if (line.startsWith("Range")) {
+                String[] range = line.split("\\s")[2].split("/")[0].split("-");
+                br.setStart(Integer.parseInt(range[0]));
+                br.setEnd(Integer.parseInt(range[1]));
+            }
+        }
+        return br;
+    }
 }
