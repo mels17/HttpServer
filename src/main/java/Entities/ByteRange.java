@@ -9,6 +9,11 @@ public class ByteRange {
         _end = 0L;
     }
 
+    public ByteRange(Long _start, Long _end) {
+        this._start = _start;
+        this._end = _end;
+    }
+
     public void setStart(Long start) {
         _start = start;
     }

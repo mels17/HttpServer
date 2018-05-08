@@ -48,7 +48,7 @@ public class RequestParser {
 
     private static String[] getUsernameAndPasswordFromAuthorizationHeader(String request) {
         String header = getHeaderThatContainsThisString(request, "Authorization");
-        String authHeader = (header.equals("-1"))? "username:password" : new String(Base64.getDecoder().decode(header.split("\\s")[2]));
+        String authHeader = (header.equals("-1")) ? "username:password" : new String(Base64.getDecoder().decode(header.split("\\s")[2]));
         return authHeader.split(":");
 
     }
@@ -77,10 +77,6 @@ public class RequestParser {
         return r.toString();
     }
 
-    public static boolean containsContentRangeInRequestHeader(String request) {
-        return request.contains("Range");
-    }
-
     public static ByteRange getContentRange(String req) {
         String[] reqContent = req.split("\r\n");
         ByteRange br = new ByteRange();
@@ -94,41 +90,35 @@ public class RequestParser {
         return br;
     }
 
-    public static ByteRange getContentRangeFromHeader(String request, Long bytes) {
+    public static ByteRange getResponseContentRange(String request, Long bytes) {
+        ByteRange byteRange = getInvalidatedRangeFromHeader(request, bytes);
+        return isValidRange(byteRange, bytes) ? byteRange
+                : byteRange.setStartAndEnd(Long.valueOf(0), Long.valueOf(bytes - 1));
+    }
+
+
+    private static ByteRange getInvalidatedRangeFromHeader(String request, Long totalNoOfBytes) {
+        String rangeHeader = getHeaderThatContainsThisString(request, "Range");
+        if (rangeHeader.equals(-1)) return new ByteRange();
+        String[] range = rangeHeader.split("\\s")[1].split("=")[1].split("-");
+        return (range.length == 1) ? new ByteRange(Long.valueOf(range[0]), totalNoOfBytes - 1)
+                : (getRangeWhenBothStartAndEndAreGiven(range));
+    }
+
+    private static ByteRange getRangeWhenBothStartAndEndAreGiven(String[] range) {
         ByteRange byteRange = new ByteRange();
-        String[] headers = request.split("\r\n");
-        for (String header: headers) {
-            if(header.contains("Range")) {
-                String[] range = header.split("=")[1].split("-");
-
-                Long uncheckedStart = Long.valueOf(0);
-                Long uncheckedEnd = Long.valueOf(0);
-
-                if(range.length == 1) {
-                    uncheckedStart = Long.valueOf(range[0]);
-                    uncheckedEnd = bytes - 1;
-                } else {
-                    if(range[0].equals("")) {
-                        uncheckedStart = Long.valueOf(71);
-                        uncheckedEnd = Long.valueOf(Integer.parseInt(range[1]) + 70);
-                    } else if(!range[0].isEmpty() && !range[1].isEmpty()) {
-                        uncheckedEnd = Long.valueOf(range[1]);
-                        uncheckedStart = Long.valueOf(range[0]);
-                    }
-                }
-
-
-
-                return isValidRange(uncheckedStart, uncheckedEnd, bytes) ?
-                        byteRange.setStartAndEnd(uncheckedStart, uncheckedEnd)
-                        : byteRange.setStartAndEnd(Long.valueOf(0), Long.valueOf(bytes - 1));
-            }
+        if (range[0].equals("")) {
+            byteRange.setStartAndEnd(Long.valueOf(71), Long.valueOf(Integer.parseInt(range[1]) + 70));
+        } else if (!range[0].isEmpty() && !range[1].isEmpty()) {
+            byteRange.setStartAndEnd(Long.valueOf(range[0]), Long.valueOf(range[1]));
         }
         return byteRange;
     }
 
 
-    private static boolean isValidRange(Long start, Long end, Long totalBytes) {
+    private static boolean isValidRange(ByteRange byteRange, Long totalBytes) {
+        Long start = byteRange.get_start();
+        Long end = byteRange.get_end();
         return start >= 0 && start < totalBytes && end > 0 && end <= totalBytes && start <= end;
     }
 

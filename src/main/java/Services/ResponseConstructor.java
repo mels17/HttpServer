@@ -3,6 +3,7 @@ package Services;
 import Entities.ByteRange;
 import Entities.Constants;
 import Entities.HeaderDetails;
+import Entities.ResponseObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -21,6 +22,14 @@ public class ResponseConstructor {
         _responseContent = content;
         _additionalHeaderOrNot = stringToAddToHeaderOrStandard;
         _contentType = contentType;
+    }
+
+    public ResponseConstructor(ResponseObject responseObject) {
+        _response = new StringBuilder();
+        _statusCode = responseObject._statusCode;
+        _additionalHeaderOrNot = responseObject._additionalHeaderOrStandard;
+        _responseContent = responseObject._body;
+        _contentType = responseObject._contentType;
     }
 
     private static String getTimeAndDate() {
