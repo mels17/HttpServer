@@ -5,7 +5,7 @@ import Entities.HttpServerArguments;
 
 import java.io.*;
 
-public class MainServer {
+public class App {
 
     public static void main(String[] args) throws IOException {
         HttpServerArguments arguments = HttpServerArguments.createServerArguments(args);

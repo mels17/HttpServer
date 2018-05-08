@@ -52,32 +52,6 @@ public class HttpRequestHandler implements Runnable {
 
         String requestString = RequestParser.getRequestString(in);
 
-        //* matt
-        /****
-         *
-         * LOOK HERE
-         */
-
-//        map { paths, objects }
-//        map { paths, "objects that implement Responses.HttpResponseCommand" }
-//
-//
-//        HashMap<String, Responses.HttpResponseCommand> mn = new Map();
-//        new Map( "/trea", new Responses.TeaPartyResponse());
-//
-//        command = map("/tea") => TeaPartyCommand
-//                map(null, new ErrorCommand);
-//
-//
-//        command.process();
-//
-//
-//        do(while)
-//            commandString = reader.read(request);
-//            handler = map.get(commandString);
-//            reponse = handler.process();
-//            return reponse;
-
         HttpServer.logs.add(requestString.split("\r\n")[0]);
 
         RegExHashMap<String, HttpResponseCommand> routeMap = HttpServer.initializeRegexMap();
