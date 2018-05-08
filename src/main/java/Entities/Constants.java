@@ -20,4 +20,7 @@ public class Constants {
             put(416, "Range Not Satisfiable");
         }
     };
+
+    public static final String TEXT_CONTENT_TYPE = "text/plain";
+    public static final String HTML_CONTENT_TYPE = "text/html";
 }

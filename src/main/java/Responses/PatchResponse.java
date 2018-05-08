@@ -1,5 +1,6 @@
 package Responses;
 
+import Entities.Constants;
 import Services.FileOperations;
 import Services.RequestParser;
 import Services.ResponseConstructor;
@@ -16,7 +17,7 @@ public class PatchResponse implements HttpResponseCommand {
             e.printStackTrace();
         }
         return new ResponseConstructor(204, "No Content",
-                "Standard", "text/plain")
+                "Standard", Constants.TEXT_CONTENT_TYPE)
                 .constructResponseHeader();
     }
 }

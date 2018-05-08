@@ -35,6 +35,6 @@ public class PartialContentResponse implements HttpResponseCommand {
             }
         }
 
-        return new ResponseConstructor(statusCode, new String(content), additionalHeader, "text/plain").getResponse();
+        return new ResponseConstructor(statusCode, new String(content), additionalHeader, Constants.TEXT_CONTENT_TYPE).getResponse();
     }
 }

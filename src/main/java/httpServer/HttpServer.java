@@ -33,7 +33,6 @@ public class HttpServer {
     private int _port;
     private File _directory;
     ExecutorService pool = Executors.newFixedThreadPool(10);
-    public static List<String> cookies = new ArrayList<String>();
     public static List<String> logs = new ArrayList<String>();
 
     private String errorMessage;
@@ -45,7 +44,7 @@ public class HttpServer {
         logger = Logger.getLogger("java-httpserver");
     }
 
-    public static RegExHashMap<String, HttpResponseCommand> initializeRegexMap() {
+    public static RegExHashMap<String, HttpResponseCommand> getRouteMap() {
         RegExHashMap<String, HttpResponseCommand> route = new RegExHashMap<String, HttpResponseCommand>();
 
         route.put("(?s).*\\bGET /coffee\\b.*", new CoffeeResponse());

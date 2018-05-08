@@ -29,6 +29,8 @@ public class PostResponse implements HttpResponseCommand {
                 e.printStackTrace();
             }
         }
-        return new ResponseConstructor(200, "OK", "Standard", "text/plain").getResponse();
+        return new ResponseConstructor(200, "OK",
+                "Standard", Constants.TEXT_CONTENT_TYPE)
+                .getResponse();
     }
 }

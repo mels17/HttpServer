@@ -1,5 +1,6 @@
 package Responses;
 
+import Entities.Constants;
 import Services.FileOperations;
 import Services.RequestParser;
 import Services.ResponseConstructor;
@@ -21,7 +22,7 @@ public class GetFileContentResponse implements HttpResponseCommand {
         String body = "";
         try {
             body = FileOperations.getTextFileContents(filename) + "\r\n";
-            return new ResponseConstructor(statusCode, body, additionalHeaders, "text/plain").getResponse();
+            return new ResponseConstructor(statusCode, body, additionalHeaders, Constants.TEXT_CONTENT_TYPE).getResponse();
         } catch (IOException e) {
             e.printStackTrace();
             return new ResponseConstructor(404, "Not Found", "Standard",

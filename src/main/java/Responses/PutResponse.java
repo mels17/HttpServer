@@ -1,5 +1,6 @@
 package Responses;
 
+import Entities.Constants;
 import Services.FileOperations;
 import Services.RequestParser;
 import Services.ResponseConstructor;
@@ -13,17 +14,17 @@ public class PutResponse implements HttpResponseCommand {
         if (!filename.equals("/")) {
             String content = RequestParser.getDataFromRequest(request);
             if (content.equals("")) return new ResponseConstructor(405, "Method Not Allowed",
-                    "Standard", "text/plain").getResponse();
+                    "Standard", Constants.TEXT_CONTENT_TYPE).getResponse();
             try {
                 FileOperations.overWriteFile(filename, content);
             } catch (IOException e) {
                 return new ResponseConstructor(404, "Not Found",
-                        "Standard", "text/plain")
+                        "Standard", Constants.TEXT_CONTENT_TYPE)
                         .getResponse();
             }
         }
         return new ResponseConstructor(200, "OK",
-                "Standard", "text/plain")
+                "Standard", Constants.TEXT_CONTENT_TYPE)
                 .getResponse();
     }
 }

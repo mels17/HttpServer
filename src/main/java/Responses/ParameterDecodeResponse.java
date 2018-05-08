@@ -1,5 +1,6 @@
 package Responses;
 
+import Entities.Constants;
 import Services.RequestParser;
 import Services.ResponseConstructor;
 
@@ -21,7 +22,7 @@ public class ParameterDecodeResponse implements HttpResponseCommand {
                         "Standard", "text/plain").getResponse();
             }
         }
-        return new ResponseConstructor(200, body,"Standard", "text/plain")
+        return new ResponseConstructor(200, body,"Standard", Constants.TEXT_CONTENT_TYPE)
                 .getResponse();
     }
 }

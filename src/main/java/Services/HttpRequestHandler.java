@@ -12,7 +12,7 @@ public class HttpRequestHandler implements Runnable {
     private Socket _client;
     InputStreamReader request;
     OutputStreamWriter response;
-    public static OutputStream out;
+    private static OutputStream out;
 
     public HttpRequestHandler(Socket clientConnectionSocket, File directory) {
         _client = clientConnectionSocket;
@@ -54,17 +54,18 @@ public class HttpRequestHandler implements Runnable {
 
         HttpServer.logs.add(requestString.split("\r\n")[0]);
 
-        RegExHashMap<String, HttpResponseCommand> routeMap = HttpServer.initializeRegexMap();
-        StringBuilder sb;
-        sb = routeMap.get(requestString).process(requestString);
-
-
+        RegExHashMap<String, HttpResponseCommand> routeMap = HttpServer.getRouteMap();
+        StringBuilder sb = routeMap.get(requestString).process(requestString);
         if (sb != null) {
             response.write(sb.toString());
             sb.setLength(0);
             response.flush();
         }
 
+    }
+
+    public static OutputStream getOutputStream() {
+        return out;
     }
 
 

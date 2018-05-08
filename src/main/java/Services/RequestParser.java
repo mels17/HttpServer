@@ -39,7 +39,7 @@ public class RequestParser {
     private static String getHeaderThatContainsThisString(String request, String headerProperty) {
         String[] headers = getRequestHeaders(request);
         for (String header : headers) {
-            if (header.contains("Authorization")) {
+            if (header.contains(headerProperty)) {
                 return header;
             }
         }
@@ -130,6 +130,12 @@ public class RequestParser {
             }
         }
         return byteRange;
+    }
+
+
+    public static String getCookieFromRequest(String request) {
+        String header = getHeaderThatContainsThisString(request, "Cookie");
+        return header.split("\\s")[1];
     }
 
 }

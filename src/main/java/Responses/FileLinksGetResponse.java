@@ -24,7 +24,7 @@ public class FileLinksGetResponse implements HttpResponseCommand {
 
         body += "</body>" + "</html>";
         return new ResponseConstructor(200, body,
-                "Standard", "text/html")
+                "Standard", Constants.HTML_CONTENT_TYPE)
                 .getResponse();
     }
 }

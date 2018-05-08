@@ -15,18 +15,22 @@ public class ImageResponse implements HttpResponseCommand {
         String extension = RequestParser.getFileExtension(request);
         String responseHeader = ResponseConstructor.constructImageHeader(extension);
 
+        readFromImageAndWriteToOutputStream(RequestParser.getPath(request), responseHeader.getBytes());
+
+        return null;
+    }
+
+    private void readFromImageAndWriteToOutputStream(String filename,  byte[] responseHeaderBytes) {
         try {
-            HttpRequestHandler.out.write(responseHeader.getBytes());
-            FileInputStream fis = new FileInputStream(Constants.PUBLIC_DIR_PATH + RequestParser.getPath(request));
+            HttpRequestHandler.getOutputStream().write(responseHeaderBytes);
+            FileInputStream fis = new FileInputStream(Constants.PUBLIC_DIR_PATH + filename);
             int i;
             while ((i = fis.read()) > -1)
-                HttpRequestHandler.out.write(i);
+                HttpRequestHandler.getOutputStream().write(i);
 
             fis.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        return null;
     }
 }
