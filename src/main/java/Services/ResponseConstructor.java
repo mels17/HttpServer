@@ -76,9 +76,4 @@ public class ResponseConstructor {
                 + "Connection: Closed\r\n\r\n";
     }
 
-    public static String getAdditionalHeaderForPartialResponse(String request) {
-        ByteRange br = RequestParser.getContentRange(request);
-        return "Accept-Ranges: bytes" + "Content-Range: bytes " + br.get_start() + "-" + br.get_end() + "\r\n\r\n";
-    }
-
 }

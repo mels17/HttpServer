@@ -77,19 +77,6 @@ public class RequestParser {
         return r.toString();
     }
 
-    public static ByteRange getContentRange(String req) {
-        String[] reqContent = req.split("\r\n");
-        ByteRange br = new ByteRange();
-        for (String line : reqContent) {
-            if (line.startsWith("Range")) {
-                String[] range = line.split("\\s")[2].split("/")[0].split("-");
-                br.setStart(Long.parseLong(range[0]));
-                br.setEnd(Long.parseLong(range[1]));
-            }
-        }
-        return br;
-    }
-
     public static ByteRange getResponseContentRange(String request, Long bytes) {
         ByteRange byteRange = getInvalidatedRangeFromHeader(request, bytes);
         return isValidRange(byteRange, bytes) ? byteRange
@@ -114,7 +101,6 @@ public class RequestParser {
         }
         return byteRange;
     }
-
 
     private static boolean isValidRange(ByteRange byteRange, Long totalBytes) {
         Long start = byteRange.get_start();
