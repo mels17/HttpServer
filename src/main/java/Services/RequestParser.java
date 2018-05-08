@@ -119,17 +119,17 @@ public class RequestParser {
 
 
 
-                if(uncheckedStart >= 0 && uncheckedStart < bytes && uncheckedEnd > 0 && uncheckedEnd <= bytes && uncheckedStart <= uncheckedEnd) {
-                    byteRange.setStart(uncheckedStart);
-                    byteRange.setEnd(uncheckedEnd);
-                } else {
-                    byteRange.setStart(Long.valueOf(0));
-                    byteRange.setEnd(Long.valueOf(bytes - 1));
-
-                }
+                return isValidRange(uncheckedStart, uncheckedEnd, bytes) ?
+                        byteRange.setStartAndEnd(uncheckedStart, uncheckedEnd)
+                        : byteRange.setStartAndEnd(Long.valueOf(0), Long.valueOf(bytes - 1));
             }
         }
         return byteRange;
+    }
+
+
+    private static boolean isValidRange(Long start, Long end, Long totalBytes) {
+        return start >= 0 && start < totalBytes && end > 0 && end <= totalBytes && start <= end;
     }
 
 

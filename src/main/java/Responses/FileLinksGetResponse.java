@@ -1,6 +1,7 @@
 package Responses;
 
 import Entities.Constants;
+import Entities.HeaderDetails;
 import Services.ResponseConstructor;
 
 import java.io.File;
@@ -24,7 +25,7 @@ public class FileLinksGetResponse implements HttpResponseCommand {
 
         body += "</body>" + "</html>";
         return new ResponseConstructor(200, body,
-                "Standard", Constants.HTML_CONTENT_TYPE)
+                "Standard", HeaderDetails.HTML_CONTENT_TYPE)
                 .getResponse();
     }
 }

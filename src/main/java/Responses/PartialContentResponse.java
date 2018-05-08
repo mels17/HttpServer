@@ -2,14 +2,12 @@ package Responses;
 
 import Entities.ByteRange;
 import Entities.Constants;
+import Entities.HeaderDetails;
 import Services.FileOperations;
 import Services.RequestParser;
 import Services.ResponseConstructor;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.RandomAccessFile;
 
 public class PartialContentResponse implements HttpResponseCommand {
     @Override
@@ -35,6 +33,6 @@ public class PartialContentResponse implements HttpResponseCommand {
             }
         }
 
-        return new ResponseConstructor(statusCode, new String(content), additionalHeader, Constants.TEXT_CONTENT_TYPE).getResponse();
+        return new ResponseConstructor(statusCode, new String(content), additionalHeader, HeaderDetails.TEXT_CONTENT_TYPE).getResponse();
     }
 }

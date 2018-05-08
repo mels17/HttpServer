@@ -24,4 +24,10 @@ public class ByteRange {
     public Long get_end() {
         return _end;
     }
+
+    public ByteRange setStartAndEnd(Long start, Long end) {
+        _start = start;
+        _end = end;
+        return this;
+    }
 }

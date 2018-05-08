@@ -1,6 +1,7 @@
 package Responses;
 
 import Entities.Constants;
+import Entities.HeaderDetails;
 import Services.RequestParser;
 import Services.ResponseConstructor;
 
@@ -30,7 +31,7 @@ public class PostResponse implements HttpResponseCommand {
             }
         }
         return new ResponseConstructor(200, "OK",
-                "Standard", Constants.TEXT_CONTENT_TYPE)
+                "Standard", HeaderDetails.TEXT_CONTENT_TYPE)
                 .getResponse();
     }
 }

@@ -21,6 +21,4 @@ public class Constants {
         }
     };
 
-    public static final String TEXT_CONTENT_TYPE = "text/plain";
-    public static final String HTML_CONTENT_TYPE = "text/html";
 }
