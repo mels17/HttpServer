@@ -2,13 +2,13 @@ package Responses;
 
 import Entities.Constants;
 import Entities.HeaderDetails;
-import Services.ResponseConstructor;
+import Entities.Response;
 
 import java.io.File;
 
 public class FileLinksGetResponse implements HttpResponseCommand {
     @Override
-    public StringBuilder process(String request) {
+    public Response process(String request) {
         File _directory = new File(Constants.PUBLIC_DIR_PATH);
 
         String body = "<!DOCTYPE html>"
@@ -24,8 +24,6 @@ public class FileLinksGetResponse implements HttpResponseCommand {
         }
 
         body += "</body>" + "</html>";
-        return new ResponseConstructor(200, body,
-                "Standard", HeaderDetails.HTML_CONTENT_TYPE)
-                .getResponse();
+        return new Response(200, "Standard", body, HeaderDetails.HTML_CONTENT_TYPE);
     }
 }

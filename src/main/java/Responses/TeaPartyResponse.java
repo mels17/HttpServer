@@ -1,13 +1,12 @@
 package Responses;
 
 import Entities.HeaderDetails;
-import Services.ResponseConstructor;
+import Entities.Response;
 
 public class TeaPartyResponse implements HttpResponseCommand {
     @Override
-    public StringBuilder process(String request) {
-        return new ResponseConstructor(200, "Tea Response",
-                "Standard", HeaderDetails.TEXT_CONTENT_TYPE)
-                .getResponse();
+    public Response process(String request) {
+        return new Response(200, HeaderDetails.STANDARD_HEADER, "Tea Response",
+                HeaderDetails.TEXT_CONTENT_TYPE);
     }
 }

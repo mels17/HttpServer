@@ -1,23 +1,22 @@
 package Responses;
 
 import Entities.HeaderDetails;
+import Entities.Response;
 import Services.FileOperations;
 import Services.RequestParser;
-import Services.ResponseConstructor;
 
 import java.io.IOException;
 
 public class GetFileContentResponse implements HttpResponseCommand {
     @Override
-    public StringBuilder process(String request) {
+    public Response process(String request) {
         String filename = RequestParser.getPath(request);
         try {
-            return new ResponseConstructor(200, FileOperations.getTextFileContents(filename) + "\r\n",
-                    "Standard", HeaderDetails.TEXT_CONTENT_TYPE).getResponse();
+            return new Response(200, "Standard", FileOperations.getTextFileContents(filename) + "\r\n",
+                    HeaderDetails.TEXT_CONTENT_TYPE);
         } catch (IOException e) {
             e.printStackTrace();
-            return new ResponseConstructor(404, "Not Found", "Standard",
-                    "text/plain").getResponse();
+            return new Response(404, "Standard", "Not Found", HeaderDetails.TEXT_CONTENT_TYPE);
         }
     }
 }

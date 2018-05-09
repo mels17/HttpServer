@@ -1,14 +1,14 @@
 package Responses;
 
 import Entities.HeaderDetails;
+import Entities.Response;
 import Services.RequestParser;
-import Services.ResponseConstructor;
 
 public class GetCookieResponse implements HttpResponseCommand {
     @Override
-    public StringBuilder process(String request) {
+    public Response process(String request) {
         String path = RequestParser.getPath(request);
-        return new ResponseConstructor(200, "Eat\r\n", "Set-Cookie: "
-                + path.split("\\?")[1] + "\r\n", HeaderDetails.TEXT_CONTENT_TYPE).getResponse();
+        return new Response(200, "Set-Cookie: "
+                + path.split("\\?")[1] + "\r\n", "Eat\r\n", HeaderDetails.TEXT_CONTENT_TYPE);
     }
 }

@@ -21,4 +21,6 @@ public class Constants {
         }
     };
 
+    public static final String NO_CONTENT = "";
+
 }

@@ -1,20 +1,16 @@
 package Responses;
 
 import Entities.HeaderDetails;
+import Entities.Response;
 import Services.RequestParser;
-import Services.ResponseConstructor;
 
 public class OptionsResponse implements HttpResponseCommand {
     @Override
-    public StringBuilder process(String request) {
+    public Response process(String request) {
         String path = RequestParser.getPath(request);
-        StringBuilder sb =  path.equals("/method_options") ? new ResponseConstructor(200, "OK",
-                "Allow: GET, HEAD, POST, OPTIONS, PUT\r\n", HeaderDetails.TEXT_CONTENT_TYPE)
-                .getResponse()
-                : new ResponseConstructor(200, "OK",
-                        "Allow:GET, OPTIONS, HEAD\r\n", HeaderDetails.TEXT_CONTENT_TYPE)
-                        .getResponse();
-        return sb;
-
+        return path.equals("/method_options") ? new Response(200, "Allow: GET, HEAD, POST, OPTIONS, PUT\r\n", "OK",
+                HeaderDetails.TEXT_CONTENT_TYPE)
+                : new Response(200, "Allow:GET, OPTIONS, HEAD\r\n", "OK",
+                HeaderDetails.TEXT_CONTENT_TYPE);
     }
 }

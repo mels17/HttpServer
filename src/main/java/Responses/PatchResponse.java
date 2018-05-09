@@ -1,23 +1,23 @@
 package Responses;
 
+import Entities.Constants;
 import Entities.HeaderDetails;
+import Entities.Response;
 import Services.FileOperations;
 import Services.RequestParser;
-import Services.ResponseConstructor;
 
 import java.io.IOException;
 
 public class PatchResponse implements HttpResponseCommand {
     @Override
-    public StringBuilder process(String request) {
+    public Response process(String request) {
         String filename = RequestParser.getPath(request);
         try {
             FileOperations.overWriteFile(filename, RequestParser.getDataFromRequest(request));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return new ResponseConstructor(204, "No Content",
-                "Standard", HeaderDetails.TEXT_CONTENT_TYPE)
-                .constructResponseHeader();
+        return new Response(204, HeaderDetails.STANDARD_HEADER, Constants.NO_CONTENT,
+                HeaderDetails.TEXT_CONTENT_TYPE);
     }
 }

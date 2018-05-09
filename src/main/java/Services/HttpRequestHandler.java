@@ -1,6 +1,7 @@
 package Services;
 
 import Entities.RegExHashMap;
+import Entities.Response;
 import Responses.HttpResponseCommand;
 import httpServer.HttpServer;
 
@@ -21,7 +22,6 @@ public class HttpRequestHandler implements Runnable {
 
     public void run() {
         System.out.println("Thread started with name:" + Thread.currentThread().getName());
-
         try {
             readRequest();
         } catch (IOException e) {
@@ -30,8 +30,6 @@ public class HttpRequestHandler implements Runnable {
             closeConnection();
             System.out.println("Thread closed.");
         }
-
-
     }
 
     private void closeConnection() {
@@ -55,10 +53,10 @@ public class HttpRequestHandler implements Runnable {
         HttpServer.logs.add(requestString.split("\r\n")[0]);
 
         RegExHashMap<String, HttpResponseCommand> routeMap = HttpServer.getRouteMap();
-        StringBuilder sb = routeMap.get(requestString).process(requestString);
-        if (sb != null) {
-            response.write(sb.toString());
-            sb.setLength(0);
+        Response responseObj = routeMap.get(requestString).process(requestString);
+        if (responseObj != null) {
+            response.write(responseObj.get_header() + responseObj.get_body());
+//            sb.setLength(0);
             response.flush();
         }
 
@@ -67,8 +65,6 @@ public class HttpRequestHandler implements Runnable {
     public static OutputStream getOutputStream() {
         return out;
     }
-
-
 
 
 }

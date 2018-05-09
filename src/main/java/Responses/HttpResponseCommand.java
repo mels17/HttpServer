@@ -1,5 +1,7 @@
 package Responses;
 
+import Entities.Response;
+
 public interface HttpResponseCommand {
-    StringBuilder process(String request);
+    Response process(String request);
 }

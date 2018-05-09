@@ -1,12 +1,12 @@
 package Responses;
 
 import Entities.HeaderDetails;
-import Services.ResponseConstructor;
+import Entities.Response;
 
 public class GetRedirect implements HttpResponseCommand {
     @Override
-    public StringBuilder process(String request) {
-        return new ResponseConstructor(302, "Found Response",
-                "Location: /\r\n", HeaderDetails.TEXT_CONTENT_TYPE).getResponse();
+    public Response process(String request) {
+        return new Response(302, "Location: /\r\n", "Found Response",
+                HeaderDetails.TEXT_CONTENT_TYPE);
     }
 }

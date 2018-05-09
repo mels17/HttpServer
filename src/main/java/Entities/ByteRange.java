@@ -14,14 +14,6 @@ public class ByteRange {
         this._end = _end;
     }
 
-    public void setStart(Long start) {
-        _start = start;
-    }
-
-    public void setEnd(Long end) {
-        _end = end;
-    }
-
     public Long get_start() {
         return _start;
     }

@@ -1,15 +1,15 @@
 package Responses;
 
 import Entities.HeaderDetails;
+import Entities.Response;
 import Services.RequestParser;
-import Services.ResponseConstructor;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
 public class ParameterDecodeResponse implements HttpResponseCommand {
     @Override
-    public StringBuilder process(String request) {
+    public Response process(String request) {
         String queryString = RequestParser.getQueryString(request);
         String[] parameters = queryString.split("&");
         String body = "";
@@ -18,12 +18,11 @@ public class ParameterDecodeResponse implements HttpResponseCommand {
             try {
                 body += URLDecoder.decode(keyValue[0], "UTF-8") + " = " + URLDecoder.decode(keyValue[1], "UTF-8") + "\r\n";
             } catch (UnsupportedEncodingException e) {
-                return new ResponseConstructor(404, e.getMessage(),
-                        "Standard", "text/plain").getResponse();
+                return new Response(404, "Standard", e.getMessage(),
+                        HeaderDetails.TEXT_CONTENT_TYPE);
             }
         }
-        return new ResponseConstructor(200, body,"Standard", HeaderDetails.TEXT_CONTENT_TYPE)
-                .getResponse();
+        return new Response(200, "Standard", body, HeaderDetails.TEXT_CONTENT_TYPE);
     }
 }
 

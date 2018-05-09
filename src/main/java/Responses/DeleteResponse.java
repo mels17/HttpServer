@@ -1,16 +1,14 @@
 package Responses;
 
 import Entities.HeaderDetails;
+import Entities.Response;
 import Services.FileOperations;
 import Services.RequestParser;
-import Services.ResponseConstructor;
 
 public class DeleteResponse implements HttpResponseCommand {
     @Override
-    public StringBuilder process(String request) {
+    public Response process(String request) {
         FileOperations.deleteFile(RequestParser.getPath(request));
-        return new ResponseConstructor(200, "OK", "Standard",
-                HeaderDetails.TEXT_CONTENT_TYPE)
-                .getResponse();
+        return new Response(200, "Standard", "OK", HeaderDetails.TEXT_CONTENT_TYPE);
     }
 }
