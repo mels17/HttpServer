@@ -52,12 +52,15 @@ public class HttpServer {
         route.put("(?s).*\\bGET /logs\\b.*", new LogResponse());
         route.put("(?s).*\\bGET /parameters\\b.*", new ParameterDecodeResponse());
         route.put("(?s).*\\bGET\\b.*\\b.(jpeg|png|gif)\\b.*", new ImageResponse());
-        route.put("(?s).*\\bGET / \\b.*", new FileLinksGetResponse());
+
         route.put("(?s).*\\bGET /redirect\\b.*", new GetRedirect());
         route.put("(?s).*\\bGET /cookie\\b.*", new GetCookieResponse());
         route.put("(?s).*\\bGET /eat_cookie \\b.*", new EatCookieResponse());
-        route.put("(?s).*\\bGET\\b.*\\b/\\b.*\\bRange\\b.*", new PartialContentResponse());
+
+        route.put("(?s).*\\bGET\\b.*\\b /\\b.*\\bRange\\b.*", new PartialContentResponse());
+
         route.put("(?s).*\\bGET /\\b.*", new GetFileContentResponse());
+        route.put("(?s).*\\bGET / \\b.*", new FileLinksGetResponse());
 
         route.put("(?s).*\\bHEAD\\b.*", new HeadResponse());
         route.put("(?s).*\\bOPTIONS\\b.*", new OptionsResponse());

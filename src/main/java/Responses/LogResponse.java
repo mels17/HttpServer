@@ -1,14 +1,15 @@
 package Responses;
 
 import Entities.HeaderDetails;
+import Entities.Request;
 import Entities.Response;
 import Services.RequestParser;
 import httpServer.HttpServer;
 
 public class LogResponse implements HttpResponseCommand {
     @Override
-    public Response process(String request) {
-        boolean isAuthorized = RequestParser.isAuthorizedToAccessLog(request);
+    public Response process(Request request) {
+        boolean isAuthorized = RequestParser.isAuthorizedToAccessLog(request.get_authorizationHeaderValue());
         if (isAuthorized) {
             return new Response(200, "Standard", getLogs(), HeaderDetails.TEXT_CONTENT_TYPE);
         }

@@ -1,6 +1,7 @@
 package Responses;
 
 import Entities.HeaderDetails;
+import Entities.Request;
 import Entities.Response;
 import Services.RequestParser;
 
@@ -9,9 +10,8 @@ import java.net.URLDecoder;
 
 public class ParameterDecodeResponse implements HttpResponseCommand {
     @Override
-    public Response process(String request) {
-        String queryString = RequestParser.getQueryString(request);
-        String[] parameters = queryString.split("&");
+    public Response process(Request request) {
+        String[] parameters = request.get_queryString().split("&");
         String body = "";
         for (String param : parameters) {
             String[] keyValue = param.split("=");

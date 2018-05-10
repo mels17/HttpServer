@@ -1,9 +1,6 @@
 package Responses;
 
-import Entities.ByteRange;
-import Entities.Constants;
-import Entities.HeaderDetails;
-import Entities.Response;
+import Entities.*;
 import Services.FileOperations;
 import Services.RequestParser;
 
@@ -11,12 +8,11 @@ import java.io.File;
 
 public class PartialContentResponse implements HttpResponseCommand {
     @Override
-    public Response process(String request) {
-        String path = RequestParser.getPath(request);
-        Long bytes = new File(Constants.PUBLIC_DIR_PATH + path).length();
-        ByteRange range = RequestParser.getResponseContentRange(request, bytes);
+    public Response process(Request request) {
+        Long bytes = new File(Constants.PUBLIC_DIR_PATH + request.get_path()).length();
+        ByteRange range = RequestParser.getResponseContentRange(request.get_rangeHeaderValue(), bytes);
 
-        return getPartialResponseObject(range, bytes, path);
+        return getPartialResponseObject(range, bytes, request.get_path());
     }
 
     private Response getPartialResponseObject(ByteRange byteRange, Long bytes, String path) {

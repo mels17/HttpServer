@@ -2,6 +2,7 @@ package Responses;
 
 import Entities.Constants;
 import Entities.HeaderDetails;
+import Entities.Request;
 import Entities.Response;
 import Services.HttpRequestHandler;
 import Services.RequestParser;
@@ -11,10 +12,10 @@ import java.io.IOException;
 
 public class ImageResponse implements HttpResponseCommand {
     @Override
-    public Response process(String request) {
+    public Response process(Request request) {
         String responseHeader = new Response(200, HeaderDetails.STANDARD_HEADER, "",
-                HeaderDetails.IMAGE_CONTENT_TYPE + RequestParser.getFileExtension(request)).get_header();
-        readFromImageAndWriteToOutputStream(RequestParser.getPath(request), responseHeader.getBytes());
+                HeaderDetails.IMAGE_CONTENT_TYPE + RequestParser.getFileExtension(request.get_path())).get_header();
+        readFromImageAndWriteToOutputStream(request.get_path(), responseHeader.getBytes());
 
         return null;
     }

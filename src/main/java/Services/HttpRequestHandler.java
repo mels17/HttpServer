@@ -1,6 +1,7 @@
 package Services;
 
 import Entities.RegExHashMap;
+import Entities.Request;
 import Entities.Response;
 import Responses.HttpResponseCommand;
 import httpServer.HttpServer;
@@ -49,14 +50,14 @@ public class HttpRequestHandler implements Runnable {
         BufferedReader in = new BufferedReader(request);
 
         String requestString = RequestParser.getRequestString(in);
+        Request requestObj = new Request(requestString);
 
         HttpServer.logs.add(requestString.split("\r\n")[0]);
 
         RegExHashMap<String, HttpResponseCommand> routeMap = HttpServer.getRouteMap();
-        Response responseObj = routeMap.get(requestString).process(requestString);
+        Response responseObj = routeMap.get(requestString).process(requestObj);
         if (responseObj != null) {
             response.write(responseObj.get_header() + responseObj.get_body());
-//            sb.setLength(0);
             response.flush();
         }
 

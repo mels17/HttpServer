@@ -2,13 +2,14 @@ package Responses;
 
 import Entities.Constants;
 import Entities.HeaderDetails;
+import Entities.Request;
 import Entities.Response;
 
 import java.io.File;
 
 public class FileLinksGetResponse implements HttpResponseCommand {
     @Override
-    public Response process(String request) {
+    public Response process(Request request) {
         File _directory = new File(Constants.PUBLIC_DIR_PATH);
 
         String body = "<!DOCTYPE html>"

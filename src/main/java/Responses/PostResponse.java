@@ -2,6 +2,7 @@ package Responses;
 
 import Entities.Constants;
 import Entities.HeaderDetails;
+import Entities.Request;
 import Entities.Response;
 import Services.RequestParser;
 
@@ -12,17 +13,15 @@ import java.io.IOException;
 
 public class PostResponse implements HttpResponseCommand {
     @Override
-    public Response process(String request) {
-        String path = RequestParser.getPath(request);
-        String content = RequestParser.getDataFromRequest(request);
-        if (content.equals("")) return new Response(405, HeaderDetails.STANDARD_HEADER, "Method Not Allowed",
+    public Response process(Request request) {
+        if (request.get_body().equals("")) return new Response(405, HeaderDetails.STANDARD_HEADER, "Method Not Allowed",
                 HeaderDetails.TEXT_CONTENT_TYPE);
-        if (path.equals("/cat-form")) {
-            String fileName = content.split("=")[0];
+        if (request.get_path().equals("/cat-form")) {
+            String fileName = request.get_body().split("=")[0];
             try {
-                File file = new File(Constants.PUBLIC_DIR_PATH + path + "/" + fileName);
+                File file = new File(Constants.PUBLIC_DIR_PATH + request.get_path() + "/" + fileName);
                 BufferedWriter output = new BufferedWriter(new FileWriter(file));
-                output.write(content);
+                output.write(request.get_body());
                 output.flush();
                 output.close();
                 return new Response(201, "Location: /cat-form/" + fileName + "\r\n",
