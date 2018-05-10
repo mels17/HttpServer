@@ -3,11 +3,13 @@ package Services;
 import Entities.RegExHashMap;
 import Entities.Request;
 import Entities.Response;
+import Responses.DefaultResponse;
 import Responses.HttpResponseCommand;
 import httpServer.HttpServer;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.HashMap;
 
 public class HttpRequestHandler implements Runnable {
     private static File _directory;
@@ -54,8 +56,9 @@ public class HttpRequestHandler implements Runnable {
 
         HttpServer.logs.add(requestString.split("\r\n")[0]);
 
-        RegExHashMap<String, HttpResponseCommand> routeMap = HttpServer.getRouteMap();
-        Response responseObj = routeMap.get(requestString).process(requestObj);
+//        RegExHashMap<String, HttpResponseCommand> routeMap = HttpServer.getRouteMap();
+        HashMap<String, HttpResponseCommand> routeMap = HttpServer.getGeneralRequestRouter();
+        Response responseObj = routeMap.getOrDefault(requestObj.get_requestType(), new DefaultResponse()).process(requestObj);
         if (responseObj != null) {
             response.write(responseObj.get_header() + responseObj.get_body());
             response.flush();

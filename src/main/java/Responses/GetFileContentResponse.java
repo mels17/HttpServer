@@ -11,6 +11,8 @@ import java.io.IOException;
 public class GetFileContentResponse implements HttpResponseCommand {
     @Override
     public Response process(Request request) {
+        if (!request.get_rangeHeaderValue().equals("-1")) return new PartialContentResponse().process(request);
+
         try {
             return new Response(200, "Standard", FileOperations.getTextFileContents(request.get_path()) + "\r\n",
                     HeaderDetails.TEXT_CONTENT_TYPE);

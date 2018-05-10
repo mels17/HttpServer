@@ -10,6 +10,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -71,6 +72,25 @@ public class HttpServer {
 
         return route;
     }
+
+
+
+    public static HashMap<String, HttpResponseCommand> getGeneralRequestRouter() {
+
+        HashMap<String, HttpResponseCommand> router = new HashMap<String, HttpResponseCommand>();
+
+        router.put("GET", new GeneralGetResponseHandler());
+        router.put("HEAD", new HeadResponse());
+        router.put("OPTIONS", new OptionsResponse());
+        router.put("PUT", new PutResponse());
+        router.put("POST", new PostResponse());
+        router.put("DELETE", new DeleteResponse());
+        router.put("PATCH", new PatchResponse());
+
+        return router;
+    }
+
+
 
 
     public void run(){
