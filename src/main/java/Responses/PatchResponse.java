@@ -1,11 +1,7 @@
 package Responses;
 
-import Entities.Constants;
-import Entities.HeaderDetails;
-import Entities.Request;
-import Entities.Response;
+import Entities.*;
 import Services.FileOperations;
-import Services.RequestParser;
 
 import java.io.IOException;
 
@@ -17,7 +13,7 @@ public class PatchResponse implements HttpResponseCommand {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return new Response(204, HeaderDetails.STANDARD_HEADER, Constants.NO_CONTENT,
+        return new Response(STATUS_CODES.NO_CONTENT, HeaderDetails.STANDARD_HEADER, Constants.NO_CONTENT,
                 HeaderDetails.TEXT_CONTENT_TYPE);
     }
 }

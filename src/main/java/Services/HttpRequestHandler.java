@@ -1,10 +1,12 @@
 package Services;
 
+import Entities.Constants;
 import Entities.RegExHashMap;
 import Entities.Request;
 import Entities.Response;
 import Responses.DefaultResponse;
 import Responses.HttpResponseCommand;
+import com.sun.tools.classfile.ConstantPool;
 import httpServer.HttpServer;
 
 import java.io.*;
@@ -56,9 +58,9 @@ public class HttpRequestHandler implements Runnable {
 
         HttpServer.logs.add(requestString.split("\r\n")[0]);
 
-//        RegExHashMap<String, HttpResponseCommand> routeMap = HttpServer.getRouteMap();
-        HashMap<String, HttpResponseCommand> routeMap = HttpServer.getGeneralRequestRouter();
-        Response responseObj = routeMap.getOrDefault(requestObj.get_requestType(), new DefaultResponse()).process(requestObj);
+        Response responseObj = Constants.SERVER_REQUEST_ROUTER.getOrDefault(requestObj.get_requestType(),
+                new DefaultResponse()).process(requestObj);
+
         if (responseObj != null) {
             response.write(responseObj.get_header() + responseObj.get_body());
             response.flush();

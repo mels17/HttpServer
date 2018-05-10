@@ -3,11 +3,12 @@ package Responses;
 import Entities.HeaderDetails;
 import Entities.Request;
 import Entities.Response;
+import Entities.STATUS_CODES;
 
 public class GetRedirect implements HttpResponseCommand {
     @Override
     public Response process(Request request) {
-        return new Response(302, "Location: /\r\n", "Found Response",
+        return new Response(STATUS_CODES.FOUND, "Location: /\r\n", "Found Response",
                 HeaderDetails.TEXT_CONTENT_TYPE);
     }
 }

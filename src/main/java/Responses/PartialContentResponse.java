@@ -21,15 +21,15 @@ public class PartialContentResponse implements HttpResponseCommand {
         if (rangeIsValid(start, end)) {
             return getResponseForValidRange(new String(FileOperations.getPartialContentFromFile(byteRange, path)), bytes, start, end);
         }
-        return new Response(416, "Standard", "", HeaderDetails.TEXT_CONTENT_TYPE);
+        return new Response(STATUS_CODES.RANGE_NOT_SATISFIABLE, HeaderDetails.STANDARD_HEADER, "", HeaderDetails.TEXT_CONTENT_TYPE);
     }
 
     private Response getResponseForValidRange(String content, Long bytes, Long start, Long end) {
         if (!rangeIsSpanningOverTheEntireFile(bytes, start, end)) {
-            return new Response(206, "Content-Range: bytes " + start.toString()
+            return new Response(STATUS_CODES.PARTIAL_CONTENT, "Content-Range: bytes " + start.toString()
                     + "-" + end.toString() + "/" + bytes.toString() + "\r\n", content, HeaderDetails.TEXT_CONTENT_TYPE);
         }
-        return new Response(416, "Content-Range: bytes */" + bytes.toString() + "\r\n",
+        return new Response(STATUS_CODES.RANGE_NOT_SATISFIABLE, "Content-Range: bytes */" + bytes.toString() + "\r\n",
                 content, HeaderDetails.TEXT_CONTENT_TYPE);
     }
 

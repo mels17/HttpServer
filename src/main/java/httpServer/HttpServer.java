@@ -45,54 +45,6 @@ public class HttpServer {
         logger = Logger.getLogger("java-httpserver");
     }
 
-    public static RegExHashMap<String, HttpResponseCommand> getRouteMap() {
-        RegExHashMap<String, HttpResponseCommand> route = new RegExHashMap<String, HttpResponseCommand>();
-
-        route.put("(?s).*\\bGET /coffee\\b.*", new CoffeeResponse());
-        route.put("(?s).*\\bGET /tea\\b.*", new TeaPartyResponse());
-        route.put("(?s).*\\bGET /logs\\b.*", new LogResponse());
-        route.put("(?s).*\\bGET /parameters\\b.*", new ParameterDecodeResponse());
-        route.put("(?s).*\\bGET\\b.*\\b.(jpeg|png|gif)\\b.*", new ImageResponse());
-
-        route.put("(?s).*\\bGET /redirect\\b.*", new GetRedirect());
-        route.put("(?s).*\\bGET /cookie\\b.*", new GetCookieResponse());
-        route.put("(?s).*\\bGET /eat_cookie \\b.*", new EatCookieResponse());
-
-        route.put("(?s).*\\bGET\\b.*\\b /\\b.*\\bRange\\b.*", new PartialContentResponse());
-
-        route.put("(?s).*\\bGET /\\b.*", new GetFileContentResponse());
-        route.put("(?s).*\\bGET / \\b.*", new FileLinksGetResponse());
-
-        route.put("(?s).*\\bHEAD\\b.*", new HeadResponse());
-        route.put("(?s).*\\bOPTIONS\\b.*", new OptionsResponse());
-        route.put("(?s).*\\bPUT\\b.*", new PutResponse());
-        route.put("(?s).*\\bPOST\\b.*", new PostResponse());
-        route.put("(?s).*\\bDELETE\\b.*", new DeleteResponse());
-        route.put("(?s).*\\bPATCH\\b.*", new PatchResponse());
-
-        return route;
-    }
-
-
-
-    public static HashMap<String, HttpResponseCommand> getGeneralRequestRouter() {
-
-        HashMap<String, HttpResponseCommand> router = new HashMap<String, HttpResponseCommand>();
-
-        router.put("GET", new GeneralGetResponseHandler());
-        router.put("HEAD", new HeadResponse());
-        router.put("OPTIONS", new OptionsResponse());
-        router.put("PUT", new PutResponse());
-        router.put("POST", new PostResponse());
-        router.put("DELETE", new DeleteResponse());
-        router.put("PATCH", new PatchResponse());
-
-        return router;
-    }
-
-
-
-
     public void run(){
         try (ServerSocket socket = new ServerSocket(_port)){
             errorMessage = "Creating server socket failed.";

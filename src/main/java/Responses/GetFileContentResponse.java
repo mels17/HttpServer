@@ -3,8 +3,8 @@ package Responses;
 import Entities.HeaderDetails;
 import Entities.Request;
 import Entities.Response;
+import Entities.STATUS_CODES;
 import Services.FileOperations;
-import Services.RequestParser;
 
 import java.io.IOException;
 
@@ -14,11 +14,13 @@ public class GetFileContentResponse implements HttpResponseCommand {
         if (!request.get_rangeHeaderValue().equals("-1")) return new PartialContentResponse().process(request);
 
         try {
-            return new Response(200, "Standard", FileOperations.getTextFileContents(request.get_path()) + "\r\n",
+            return new Response(STATUS_CODES.OK, HeaderDetails.STANDARD_HEADER,
+                    FileOperations.getTextFileContents(request.get_path()) + "\r\n",
                     HeaderDetails.TEXT_CONTENT_TYPE);
         } catch (IOException e) {
             e.printStackTrace();
-            return new Response(404, "Standard", "Not Found", HeaderDetails.TEXT_CONTENT_TYPE);
+            return new Response(STATUS_CODES.NOT_FOUND, HeaderDetails.STANDARD_HEADER, "Not Found",
+                    HeaderDetails.TEXT_CONTENT_TYPE);
         }
     }
 }

@@ -3,6 +3,7 @@ package Responses;
 import Entities.HeaderDetails;
 import Entities.Request;
 import Entities.Response;
+import Entities.STATUS_CODES;
 import Services.RequestParser;
 import httpServer.HttpServer;
 
@@ -11,10 +12,10 @@ public class LogResponse implements HttpResponseCommand {
     public Response process(Request request) {
         boolean isAuthorized = RequestParser.isAuthorizedToAccessLog(request.get_authorizationHeaderValue());
         if (isAuthorized) {
-            return new Response(200, "Standard", getLogs(), HeaderDetails.TEXT_CONTENT_TYPE);
+            return new Response(STATUS_CODES.OK, HeaderDetails.STANDARD_HEADER, getLogs(), HeaderDetails.TEXT_CONTENT_TYPE);
         }
         String additionalHeader = "WWW-Authenticate: Basic\r\n" + "Authorization: Basic\r\n";
-        return new Response(401, additionalHeader, "Logs Access Denied", HeaderDetails.TEXT_CONTENT_TYPE);
+        return new Response(STATUS_CODES.UNAUTHORIZED, additionalHeader, "Logs Access Denied", HeaderDetails.TEXT_CONTENT_TYPE);
     }
 
     private String getLogs() {

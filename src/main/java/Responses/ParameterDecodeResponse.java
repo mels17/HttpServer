@@ -3,7 +3,7 @@ package Responses;
 import Entities.HeaderDetails;
 import Entities.Request;
 import Entities.Response;
-import Services.RequestParser;
+import Entities.STATUS_CODES;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -18,11 +18,11 @@ public class ParameterDecodeResponse implements HttpResponseCommand {
             try {
                 body += URLDecoder.decode(keyValue[0], "UTF-8") + " = " + URLDecoder.decode(keyValue[1], "UTF-8") + "\r\n";
             } catch (UnsupportedEncodingException e) {
-                return new Response(404, "Standard", e.getMessage(),
+                return new Response(STATUS_CODES.NOT_FOUND, HeaderDetails.STANDARD_HEADER, e.getMessage(),
                         HeaderDetails.TEXT_CONTENT_TYPE);
             }
         }
-        return new Response(200, "Standard", body, HeaderDetails.TEXT_CONTENT_TYPE);
+        return new Response(STATUS_CODES.OK, HeaderDetails.STANDARD_HEADER, body, HeaderDetails.TEXT_CONTENT_TYPE);
     }
 }
 

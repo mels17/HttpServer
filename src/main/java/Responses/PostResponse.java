@@ -1,10 +1,6 @@
 package Responses;
 
-import Entities.Constants;
-import Entities.HeaderDetails;
-import Entities.Request;
-import Entities.Response;
-import Services.RequestParser;
+import Entities.*;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -14,7 +10,7 @@ import java.io.IOException;
 public class PostResponse implements HttpResponseCommand {
     @Override
     public Response process(Request request) {
-        if (request.get_body().equals("")) return new Response(405, HeaderDetails.STANDARD_HEADER, "Method Not Allowed",
+        if (request.get_body().equals("")) return new Response(STATUS_CODES.NOT_ALLOWED, HeaderDetails.STANDARD_HEADER, "Method Not Allowed",
                 HeaderDetails.TEXT_CONTENT_TYPE);
         if (request.get_path().equals("/cat-form")) {
             String fileName = request.get_body().split("=")[0];
@@ -24,13 +20,13 @@ public class PostResponse implements HttpResponseCommand {
                 output.write(request.get_body());
                 output.flush();
                 output.close();
-                return new Response(201, "Location: /cat-form/" + fileName + "\r\n",
+                return new Response(STATUS_CODES.CREATED, "Location: /cat-form/" + fileName + "\r\n",
                         "Write to file complete", HeaderDetails.TEXT_CONTENT_TYPE);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        return new Response(200, HeaderDetails.STANDARD_HEADER, "Write Incomplete",
+        return new Response(STATUS_CODES.OK, HeaderDetails.STANDARD_HEADER, "Write Incomplete",
                 HeaderDetails.TEXT_CONTENT_TYPE);
     }
 }
