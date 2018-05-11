@@ -51,13 +51,6 @@ public class HttpRequestHandler implements Runnable {
 
         String requestString = RequestParser.getRequestString(in);
         Request requestObj = new Request(requestString);
-
-        System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&");
-        System.out.println(requestObj.get_justPath());
-        System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^");
-        System.out.println(requestObj.get_queryString());
-        System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%");
-
         SimpleHttpServer.logs.add(requestString.split("\r\n")[0]);
 
         Response responseObj = Constants.SERVER_REQUEST_ROUTER.getOrDefault(requestObj.get_requestType(),

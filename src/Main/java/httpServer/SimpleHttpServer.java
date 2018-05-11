@@ -1,7 +1,5 @@
 package httpServer;
 
-import Entities.RegExHashMap;
-import Responses.*;
 import Services.HttpRequestHandler;
 
 import java.io.File;
@@ -10,7 +8,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

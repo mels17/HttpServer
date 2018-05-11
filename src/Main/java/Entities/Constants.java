@@ -37,22 +37,6 @@ public class Constants {
         }
     };
 
-//    public static final RegExHashMap<String, HttpResponseCommand> GET_REQUEST_ROUTES = new RegExHashMap<String, HttpResponseCommand>() {
-//        {
-//            put("/coffee", new CoffeeResponse());
-//            put("/tea", new TeaPartyResponse());
-//            put("/logs", new LogResponse());
-//            put("^/parameters.*$", new ParameterDecodeResponse());
-//            put("(?s).*\\b.(jpeg|png|gif)\\b.*", new ImageResponse());
-//            put("/redirect", new RedirectResponse());
-//            put("^/cookie.*$", new CookieResponse());
-//            put("/eat_cookie", new EatCookieResponse());
-//            put("/", new FileLinksResponse());
-//            put("^/.*$", new FileContentResponse());
-//        }
-//    };
-
-
     public static final HashMap<String, HttpResponseCommand> GET_ROUTES = new HashMap<String, HttpResponseCommand>() {
         {
             put("/coffee", new CoffeeResponse());
