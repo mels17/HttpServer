@@ -4,7 +4,7 @@ import Entities.*;
 
 import java.io.File;
 
-public class FileLinksGetResponse implements HttpResponseCommand {
+public class FileLinksResponse implements HttpResponseCommand {
     @Override
     public Response process(Request request) {
         File _directory = new File(Constants.PUBLIC_DIR_PATH);

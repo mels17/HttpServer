@@ -5,7 +5,7 @@ import Entities.Request;
 import Entities.Response;
 import Entities.STATUS_CODES;
 
-public class GetRedirect implements HttpResponseCommand {
+public class RedirectResponse implements HttpResponseCommand {
     @Override
     public Response process(Request request) {
         return new Response(STATUS_CODES.FOUND, "Location: /\r\n", "Found Response",

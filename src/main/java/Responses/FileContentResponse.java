@@ -8,7 +8,7 @@ import Services.FileOperations;
 
 import java.io.IOException;
 
-public class GetFileContentResponse implements HttpResponseCommand {
+public class FileContentResponse implements HttpResponseCommand {
     @Override
     public Response process(Request request) {
         if (!request.get_rangeHeaderValue().equals("-1")) return new PartialContentResponse().process(request);

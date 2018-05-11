@@ -44,11 +44,11 @@ public class Constants {
             put("/logs", new LogResponse());
             put("^/parameters.*$", new ParameterDecodeResponse());
             put("(?s).*\\b.(jpeg|png|gif)\\b.*", new ImageResponse());
-            put("/redirect", new GetRedirect());
-            put("^/cookie.*$", new GetCookieResponse());
+            put("/redirect", new RedirectResponse());
+            put("^/cookie.*$", new CookieResponse());
             put("/eat_cookie", new EatCookieResponse());
-            put("/", new FileLinksGetResponse());
-            put("^/.*$", new GetFileContentResponse());
+            put("/", new FileLinksResponse());
+            put("^/.*$", new FileContentResponse());
         }
     };
 
