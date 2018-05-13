@@ -12,6 +12,8 @@ public class Request {
     String _params;
     String _justPath;
 
+    Constants.Methods requestType;
+
     public Request(String requestString) {
         _path = getPath(requestString);
         _requestType = getRequestType(requestString);
@@ -22,6 +24,17 @@ public class Request {
         _body = getDataFromRequest(requestString);
         _params = getParams(requestString);
         _justPath = getJustPath();
+
+
+        requestType = setRequestTypeEnum();
+    }
+
+    private Constants.Methods setRequestTypeEnum() {
+        try {
+            return Constants.Methods.valueOf(_requestType);
+        } catch(IllegalArgumentException e) {
+            return Constants.Methods.BOGUS;
+        }
     }
 
     private String getJustPath() {
@@ -106,5 +119,9 @@ public class Request {
 
     public String get_justPath() {
         return _justPath;
+    }
+
+    public Constants.Methods getRequestType() {
+        return requestType;
     }
 }

@@ -14,11 +14,12 @@ public class FileLinksResponse implements HttpResponseCommand {
                 + "<head>"
                 + "<title> File Links </title>"
                 + "</head>"
-                + "<body>";
+                + "<body>"
+                + "<h1> File Links </h1>";
 
         for (String file : _directory.list()) {
             String path = '/' + file;
-            body += "<a href=" + path + ">" + file + "</a>";
+            body += "<a href=" + path + ">" + file + "</a> <br />";
         }
 
         body += "</body>" + "</html>";

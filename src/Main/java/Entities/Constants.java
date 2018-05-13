@@ -24,29 +24,33 @@ public class Constants {
     };
 
     public static final String NO_CONTENT = "";
+//
+//    public static final HashMap<String, HttpResponseCommand> SERVER_REQUEST_ROUTER = new HashMap<String, HttpResponseCommand>() {
+//        {
+//            put("GET", new GeneralGetResponseHandler());
+//            put("HEAD", new HeadResponse());
+//            put("OPTIONS", new OptionsResponse());
+//            put("PUT", new PutResponse());
+//            put("POST", new PostResponse());
+//            put("DELETE", new DeleteResponse());
+//            put("PATCH", new PatchResponse());
+//        }
+//    };
+//
+//    public static final HashMap<String, HttpResponseCommand> GET_ROUTES = new HashMap<String, HttpResponseCommand>() {
+//        {
+//            put("/coffee", new CoffeeResponse());
+//            put("/tea", new TeaPartyResponse());
+//            put("/logs", new LogResponse());
+//            put("/parameters", new ParameterDecodeResponse());
+//            put("/redirect", new RedirectResponse());
+//            put("/cookie", new CookieResponse());
+//            put("/eat_cookie", new EatCookieResponse());
+//            put("/", new FileLinksResponse());
+//        }
+//    };
 
-    public static final HashMap<String, HttpResponseCommand> SERVER_REQUEST_ROUTER = new HashMap<String, HttpResponseCommand>() {
-        {
-            put("GET", new GeneralGetResponseHandler());
-            put("HEAD", new HeadResponse());
-            put("OPTIONS", new OptionsResponse());
-            put("PUT", new PutResponse());
-            put("POST", new PostResponse());
-            put("DELETE", new DeleteResponse());
-            put("PATCH", new PatchResponse());
-        }
-    };
-
-    public static final HashMap<String, HttpResponseCommand> GET_ROUTES = new HashMap<String, HttpResponseCommand>() {
-        {
-            put("/coffee", new CoffeeResponse());
-            put("/tea", new TeaPartyResponse());
-            put("/logs", new LogResponse());
-            put("/parameters", new ParameterDecodeResponse());
-            put("/redirect", new RedirectResponse());
-            put("/cookie", new CookieResponse());
-            put("/eat_cookie", new EatCookieResponse());
-            put("/", new FileLinksResponse());
-        }
+    public enum Methods {
+        GET, HEAD, OPTIONS, PUT, POST, DELETE, PATCH, BOGUS
     };
 }
