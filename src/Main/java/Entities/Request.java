@@ -89,10 +89,6 @@ public class Request {
         return _path;
     }
 
-    public String get_requestType() {
-        return _requestType;
-    }
-
     public String get_rangeHeaderValue() {
         return _rangeHeaderValue;
     }

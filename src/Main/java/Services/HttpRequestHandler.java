@@ -53,11 +53,7 @@ public class HttpRequestHandler implements Runnable {
         Request requestObj = new Request(requestString);
         SimpleHttpServer.logs.add(requestString.split("\r\n")[0]);
 
-        Router router = new Router();
-        Response responseObj = router.findCommandForRequest(requestObj).process(requestObj);
-//
-//        Response responseObj = Constants.SERVER_REQUEST_ROUTER.getOrDefault(requestObj.get_requestType(),
-//                new DefaultResponse()).process(requestObj);
+        Response responseObj = new Router().findCommandForRequest(requestObj).process(requestObj);
 
         if (responseObj != null) {
             response.write(responseObj.get_header() + responseObj.get_body());
