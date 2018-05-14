@@ -95,5 +95,6 @@ public class RouterTest {
     public void getBogusRequestReturnsDefaultResponseInstance() {
         String reqString = "BOGUS /file1 HTTP/1.1\r\n\r\n";
         Assert.assertTrue(router.findCommandForRequest(new Request(reqString)) instanceof DefaultResponse);
+
     }
 }
