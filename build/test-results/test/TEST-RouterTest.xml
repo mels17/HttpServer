@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="RouterTest" tests="15" skipped="0" failures="0" errors="0" timestamp="2018-05-13T23:44:30" hostname="C02VM0HVHTD8" time="0.008">
+<testsuite name="RouterTest" tests="15" skipped="0" failures="0" errors="0" timestamp="2018-05-15T01:06:39" hostname="C02VM0HVHTD8" time="0.008">
   <properties/>
-  <testcase name="getFileLinksRequestReturnsFileLinksResponseInstance" classname="RouterTest" time="0.002"/>
-  <testcase name="testGetRequestWithParametersReturnParameterDecodeResponseInstance" classname="RouterTest" time="0.001"/>
+  <testcase name="getFileLinksRequestReturnsFileLinksResponseInstance" classname="RouterTest" time="0.001"/>
+  <testcase name="testGetRequestWithParametersReturnParameterDecodeResponseInstance" classname="RouterTest" time="0.0"/>
   <testcase name="getCoffeeRequestReturnsCoffeeResponseInstance" classname="RouterTest" time="0.0"/>
-  <testcase name="testGetRequestWithFilePathReturnsInstanceOfFileContentResponse" classname="RouterTest" time="0.001"/>
+  <testcase name="testGetRequestWithFilePathReturnsInstanceOfFileContentResponse" classname="RouterTest" time="0.0"/>
   <testcase name="testPutRequestReturnsInstanceOfPutResponse" classname="RouterTest" time="0.0"/>
   <testcase name="getLogsRequestReturnsLogResponseInstance" classname="RouterTest" time="0.001"/>
   <testcase name="testDeleteRequestReturnsDeleteResponseInstance" classname="RouterTest" time="0.0"/>
@@ -15,7 +15,7 @@
   <testcase name="getCookieRequestReturnsCookieResponseInstance" classname="RouterTest" time="0.0"/>
   <testcase name="getTeaRequestReturnsInstanceOfTeaResponse" classname="RouterTest" time="0.0"/>
   <testcase name="testOptionsResponseReturnInstanceOfOptionsResponse" classname="RouterTest" time="0.0"/>
-  <testcase name="getRedirectRequestReturnsRdirectResponseInstance" classname="RouterTest" time="0.0"/>
+  <testcase name="getRedirectRequestReturnsRdirectResponseInstance" classname="RouterTest" time="0.001"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
