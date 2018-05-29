@@ -6,10 +6,6 @@ import java.io.*;
 
 public class App {
 
-    enum example{
-        ABC, DEF
-    };
-
     public static void main(String[] args) throws IOException {
         HttpServerArguments arguments = HttpServerArguments.createServerArguments(args);
         File directory = new File(Constants.PUBLIC_DIR_PATH);

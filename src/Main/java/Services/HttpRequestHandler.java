@@ -4,6 +4,7 @@ import Entities.Constants;
 import Entities.Request;
 import Entities.Response;
 import Responses.DefaultResponse;
+import com.sun.tools.classfile.ConstantPool;
 import httpServer.SimpleHttpServer;
 
 import java.io.*;
@@ -11,7 +12,7 @@ import java.net.Socket;
 
 public class HttpRequestHandler implements Runnable {
     private static File _directory;
-    private Socket _client;
+    private static Socket _client;
     InputStreamReader request;
     OutputStreamWriter response;
     private static OutputStream out;
@@ -53,6 +54,7 @@ public class HttpRequestHandler implements Runnable {
         Request requestObj = new Request(requestString);
         SimpleHttpServer.logs.add(requestString.split("\r\n")[0]);
 
+
         Response responseObj = new Router().findCommandForRequest(requestObj).process(requestObj);
 
         if (responseObj != null) {
@@ -64,6 +66,10 @@ public class HttpRequestHandler implements Runnable {
 
     public static OutputStream getOutputStream() {
         return out;
+    }
+
+    public static Socket getClientSocket() {
+        return _client;
     }
 
 

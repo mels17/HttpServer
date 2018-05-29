@@ -17,6 +17,7 @@ public class Router {
             new Pair(new MyRequestMatcher(Constants.Methods.GET, "/redirect"), new RedirectResponse()),
             new Pair(new MyRequestMatcher(Constants.Methods.GET, "/cookie"), new CookieResponse()),
             new Pair(new MyRequestMatcher(Constants.Methods.GET, "/eat_cookie"), new EatCookieResponse()),
+            new Pair(new MyRequestMatcher(Constants.Methods.GET, "/timer"), new TimerResponse()),
             new Pair(new MyRequestMatcher(Constants.Methods.GET, "/"), new FileLinksResponse()),
             new Pair(new MyRequestMatcher(Constants.Methods.GET), new FileContentResponse()),
             new Pair(new MyRequestMatcher(Constants.Methods.HEAD), new HeadResponse()),
